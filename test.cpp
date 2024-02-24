@@ -21,7 +21,7 @@ int main() {
     std::string readBuffer; // String to store the response data
 
     curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");
-    curl_easy_setopt(hnd, CURLOPT_URL, "https://api.twelvedata.com/time_series?symbol=AAPL&interval=15min&apikey=41a5696d75774b8eb6929a1dc1af50d6");
+    curl_easy_setopt(hnd, CURLOPT_URL, "https://api.twelvedata.com/quote?symbol=AAPL&apikey=41a5696d75774b8eb6929a1dc1af50d6");
     curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, WriteCallback); // Set callback function
     curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &readBuffer); // Set data structure to store response
 
