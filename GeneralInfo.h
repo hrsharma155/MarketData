@@ -8,7 +8,6 @@
 class GeneralInfo{
 
     public:
-
         //TIME SERIES GETTERS
 
         //TIME SRIES --> setting info into vector for 1 big interval starting from current time and backwards  
@@ -34,6 +33,7 @@ class GeneralInfo{
         //clear array after done
         int getVolumeTS(){}
 
+
         //TIME SERIES --> getting info for MULTIPLE intervals requested
 
         //iterate through array and fetch timeStamp for each interval. Ordering from current time --> before current time
@@ -58,7 +58,6 @@ class GeneralInfo{
         //fetch exchange rate from vector 'valuesER' ..... 2nd element
         //clear 'valuesER'
         double getStockExchangeRateER(){}
-
         //fetch time stamp in readable form. 
         //Param: Unix timestamp in seconds. 
         //Time stamp should be 3rd element in 'valuesER'
@@ -81,13 +80,7 @@ class GeneralInfo{
         //REAL TIME PRICE
         double getRealTimePriceRTP(std::string symbol){}
 
-
-
-
-
     private:
-        
-
         //TIME SERIES SETTERS
 
         /*  Given company symbol and interval length. Interval observed will be: current time --> (current time - interval).
@@ -95,7 +88,6 @@ class GeneralInfo{
             Use Parse function to read the .json file and put TSValues all in the array 'genTSValues'
         */
         void setValuesTS(std::string symbol, int intervalLength){} 
-
         /*  Given company symbol, interval length, and number of intervals. all the values of each interval will be placed in array consecutively
             Run the http request, use WriteCallBack() and WriteToJson() to read and write to .json file
             Use Parse function to read the .json file and put TSValues all in the array 'genTSValues'
@@ -110,7 +102,6 @@ class GeneralInfo{
             Put all values in array vector 'valuesER'..... <symbol1/symbol2, exchange rate, unix timestamp>
         */
         void setValuesER(std::string symbol1, std::string symbol2, std::string dateTimeString){}
-
         /*  Given company symbol1 and another company symbol2. (http request will return local exchange time) 
             Run http request, use WriteCallback() and WriteToJson() to read and write to .json file
             Put all values in array vector 'valuesER'..... <symbol1/symbol2, exchange rate, unix timestamp>
@@ -131,11 +122,6 @@ class GeneralInfo{
             Put all values in array vector 'valuesCC'..... <symbol1/symbol2, exchange rate, amount, unix timestamp>
         */
         void setValuesCC(std::string symbol1, std::string symbol2, double amount, std::string dateTimeString){}
-
-
-
-
-
 
         //HELPER FUNCTIONS
 
