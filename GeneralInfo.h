@@ -15,70 +15,70 @@ class GeneralInfo{
         //fetch and return open price that was set in the array 'genTSValues' via setter function. 
         //(openPrice = fetched open price from very last interval)
         //clear array after done
-        int getOpenTS(){}
+        int getOpenTS();
         //fetch and return high price that was set in the array 'genTSValues' via setter function
         //compare every single high in each interval. Take and return highest value.
         //clear array after done
-        int getHighTS(){}
+        int getHighTS();
         //fetch and return low price that was set in the array 'genTSValues' via setter function
         //compare every single low in each interval. Take and return the lowest value
         //clear array after done
-        int getLowTS(){}
+        int getLowTS();
         //fetch and return close price that was set in the array 'genTSValues' via setter function
         //closePrice = close price of the second interval. Why second? --> Edge case issue. Better accuracy 
         //clear array after done
-        int getCloseTS(){}
+        int getCloseTS();
         //fetch and return volume price that was set in the array 'genTSValues' via setter function
         //sum of all volumes across all intervals
         //clear array after done
-        int getVolumeTS(){}
+        int getVolumeTS();
 
 
         //TIME SERIES --> getting info for MULTIPLE intervals requested
 
         //iterate through array and fetch timeStamp for each interval. Ordering from current time --> before current time
         //cout or put in an array
-        std::vector<std::string> getTimeStampTS(){}
+        std::vector<std::string> getTimeStampTS();
         //iterate through array and fetch every single highPrice value. Ordering from current time --> before current time
         //return as a vector. Clear 'genTSValues'
-        std::vector<double> getAllHighTS(){}
+        std::vector<double> getAllHighTS();
         //iterate through array and fetch every single lowPrice value. Ordering from current time --> before current time
         //cout or put in an array. Clear 'genTSValues'
-        std::vector<double> getAllLowTS(){}
+        std::vector<double> getAllLowTS();
         //iterate through array and fetch every single closePrice value. Ordering from current time --> before current time
         //cout or put in an array. Clear 'genTSValues'
-        std::vector<double> getAllCloseTS(){}
+        std::vector<double> getAllCloseTS();
         //iterate through array and fetch every single volume value. Ordering from current time --> before current time
         //cout or put in an array. Clear 'genTSValues'
-        std::vector<double> getAllVolumeTS(){}
+        std::vector<double> getAllVolumeTS();
 
 
         //EXCHANGE RATE GETTERS (DONT NEED?)
 
         //fetch exchange rate from vector 'valuesER' ..... 2nd element
         //clear 'valuesER'
-        double getStockExchangeRateER(){}
+        double getStockExchangeRateER();
         //fetch time stamp in readable form. 
         //Param: Unix timestamp in seconds. 
         //Time stamp should be 3rd element in 'valuesER'
         //clear 'valuesER'
-        std::string getTimeStampER(int seconds){}
+        std::string getTimeStampER(int seconds);
 
 
 
         //CURRENCY CONVERSION GETTERS   (OVERWRITES EXCHANGE RATE?)
         
         //get exchange rate of two currencies. 2nd element in vector 'valuesCC'
-        double getCurrencyExchangeRateCC(){}
+        double getCurrencyExchangeRateCC();
         //get currency exchange amount from two currencies. How much is 5 USD in CAD? 3rd element in 'valuesCC' vector
-        double getCurrencyExchangeAmountCC(){}
+        double getCurrencyExchangeAmountCC();
         //get time as a string given unix time in seconds
-        std::string getTimeStampCC(int seconds){}
+        std::string getTimeStampCC(int seconds);
 
 
 
         //REAL TIME PRICE
-        double getRealTimePriceRTP(std::string symbol){}
+        double getRealTimePriceRTP(std::string symbol);
 
     private:
         //TIME SERIES SETTERS
@@ -87,12 +87,12 @@ class GeneralInfo{
             Run the http request, use WriteCallBack() and WriteToJson() to read and write to .json file
             Use Parse function to read the .json file and put TSValues all in the array 'genTSValues'
         */
-        void setValuesTS(std::string symbol, int intervalLength){} 
+        void setValuesTS(std::string symbol, int intervalLength); 
         /*  Given company symbol, interval length, and number of intervals. all the values of each interval will be placed in array consecutively
             Run the http request, use WriteCallBack() and WriteToJson() to read and write to .json file
             Use Parse function to read the .json file and put TSValues all in the array 'genTSValues'
         */
-        void setValuesTS(std::string symbol, int intervalLength, int intervalAmount){}
+        void setValuesTS(std::string symbol, int intervalLength, int intervalAmount);
 
 
         //EXCHANGE RATE SETTERS (DONT NEED?)
@@ -101,12 +101,12 @@ class GeneralInfo{
             Run http request, use WriteCallback() and WriteToJson() to read and write to .json file
             Put all values in array vector 'valuesER'..... <symbol1/symbol2, exchange rate, unix timestamp>
         */
-        void setValuesER(std::string symbol1, std::string symbol2, std::string dateTimeString){}
+        void setValuesER(std::string symbol1, std::string symbol2, std::string dateTimeString);
         /*  Given company symbol1 and another company symbol2. (http request will return local exchange time) 
             Run http request, use WriteCallback() and WriteToJson() to read and write to .json file
             Put all values in array vector 'valuesER'..... <symbol1/symbol2, exchange rate, unix timestamp>
         */
-        void setValuesER(std::string symbol1, std::string symbol2){}
+        void setValuesER(std::string symbol1, std::string symbol2);
 
 
 
@@ -116,18 +116,18 @@ class GeneralInfo{
             Run http request, use WriteCallback() and WriteToJson() to read and write to .json file
             Put all values in array vector 'valuesCC'..... <symbol1/symbol2, exchange rate, amount,  unix timestamp>
         */
-        void setValuesCC(std::string symbol1, std::string symbol2, double amount){}
+        void setValuesCC(std::string symbol1, std::string symbol2, double amount);
         /*  Given company symbol1 and another company symbol2, amount, and dateTimeString. (http request will return rate & amount at specified time) 
             Run http request, use WriteCallback() and WriteToJson() to read and write to .json file
             Put all values in array vector 'valuesCC'..... <symbol1/symbol2, exchange rate, amount, unix timestamp>
         */
-        void setValuesCC(std::string symbol1, std::string symbol2, double amount, std::string dateTimeString){}
+        void setValuesCC(std::string symbol1, std::string symbol2, double amount, std::string dateTimeString);
 
         //HELPER FUNCTIONS
 
-        bool ValidateDateTime(const std::string& dateTimeString){}
+        bool ValidateDateTime(const std::string& dateTimeString);
 
-        std::string ConvertFromUnixTime(int unixTime){}
+        std::string ConvertFromUnixTime(int unixTime);
 };
 
 
