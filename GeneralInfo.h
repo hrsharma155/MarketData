@@ -6,8 +6,9 @@
 
 
 class GeneralInfo{
-
+    
     public:
+        std::vector<double> valuesTS;
         //TIME SERIES GETTERS
 
         //TIME SRIES --> setting info into vector for 1 big interval starting from current time and backwards  
@@ -80,7 +81,8 @@ class GeneralInfo{
         //REAL TIME PRICE
         double getRealTimePriceRTP(std::string symbol);
 
-    private:
+    
+
         //TIME SERIES SETTERS
 
         /*  Given company symbol and interval length. Interval observed will be: current time --> (current time - interval).
@@ -124,7 +126,7 @@ class GeneralInfo{
         void setValuesCC(std::string symbol1, std::string symbol2, double amount, std::string dateTimeString);
 
         //HELPER FUNCTIONS
-
+    private:
         bool ValidateDateTime(const std::string& dateTimeString);
 
         std::string ConvertFromUnixTime(int unixTime);
