@@ -11,8 +11,14 @@ int main() {
    
     GeneralInfo dataReport;
     std::string l = "AAPL";
-    dataReport.setValuesTS(l, 2);
-    
+    dataReport.setValuesTS("AAPL", "5min");
+
+    for (const auto& value : dataReport.valuesTS) {
+        std::cout << value << ' ';
+    }
+
+    std::cout << "\n";
+
     
 
 

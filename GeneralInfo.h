@@ -89,7 +89,7 @@ class GeneralInfo{
             Run the http request, use WriteCallBack() and WriteToJson() to read and write to .json file
             Use Parse function to read the .json file and put TSValues all in the array 'genTSValues'
         */
-        void setValuesTS(std::string symbol, int intervalLength); 
+        void setValuesTS(std::string symbol, std::string intervalLength); 
         /*  Given company symbol, interval length, and number of intervals. all the values of each interval will be placed in array consecutively
             Run the http request, use WriteCallBack() and WriteToJson() to read and write to .json file
             Use Parse function to read the .json file and put TSValues all in the array 'genTSValues'

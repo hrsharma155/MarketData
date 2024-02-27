@@ -4,17 +4,22 @@
 #include "Parse.h"
 #include <curl/curl.h>
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <stdexcept>
 #include <json-c/json.h>
 
 
 //Time series functions
-void GeneralInfo::setValuesTS(std::string symbol, int IntervalLength){
+void GeneralInfo::setValuesTS(std::string symbol, std::string intervalLength){
     CURL *hnd = curl_easy_init();
+
+    std::string URL = "https://api.twelvedata.com/time_series?symbol=" + symbol + "&interval=" + intervalLength + "&outputsize=1&apikey=41a5696d75774b8eb6929a1dc1af50d6";
+
     if (hnd) {
         std::string readBuffer; // String to store the response data
         curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");
-        curl_easy_setopt(hnd, CURLOPT_URL, "https://api.twelvedata.com/time_series?symbol=AAPL&interval=5min&apikey=41a5696d75774b8eb6929a1dc1af50d6");
+        curl_easy_setopt(hnd, CURLOPT_URL, URL.c_str());
         curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, Parse::WriteCallBack); // Use the member function of Parse class
         curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &readBuffer); // Pass the instance of Parse class
         CURLcode ret = curl_easy_perform(hnd); // Perform the CURL request
@@ -24,8 +29,26 @@ void GeneralInfo::setValuesTS(std::string symbol, int IntervalLength){
         curl_easy_cleanup(hnd); // Clean up CURL
     }
 
+
+    std::ifstream file("response.json");
+    try{
+        if(!file.is_open()){
+            //std::cerr << "json file failed to open for vector parsing";
+            throw std::runtime_error("json file failed to open for vector parsing");
+        }
+    }
+    catch(const std::runtime_error& e){
+        std::cerr << e.what() <<std::endl;
+
+    }
+
+ 
+
+
     //parse the .json file and sort into vector
-    GeneralInfo::valuesTS.push_back(1);
+    GeneralInfo::valuesTS.push_back(1.0);
+    GeneralInfo::valuesTS.push_back(1.0);
+
 
 }
 void GeneralInfo::setValuesTS(std::string symbol, int intervalLength, int intervalAmount){}
