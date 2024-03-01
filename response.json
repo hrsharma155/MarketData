@@ -1,1 +1,1 @@
-{ "meta": { "symbol": "AAPL", "interval": "5min", "currency": "USD", "exchange_timezone": "America\/New_York", "exchange": "NASDAQ", "mic_code": "XNGS", "type": "Common Stock" }, "values": [ { "datetime": "2024-02-26 15:55:00", "open": "181.32500", "high": "181.33749", "low": "181.13499", "close": "181.14000", "volume": "1626989" } ], "status": "ok" }
+{ "symbol": "CAD\/USD", "rate": 0.73662, "timestamp": 1709254920 }

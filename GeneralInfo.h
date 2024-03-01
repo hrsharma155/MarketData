@@ -8,7 +8,8 @@
 class GeneralInfo{
     
     public:
-        std::vector<double> valuesTS;
+        std::vector<std::string> valuesTS;
+        std::vector<std::string> valuesER;
         //TIME SERIES GETTERS
 
         //TIME SRIES --> setting info into vector for 1 big interval starting from current time and backwards  
@@ -94,7 +95,7 @@ class GeneralInfo{
             Run the http request, use WriteCallBack() and WriteToJson() to read and write to .json file
             Use Parse function to read the .json file and put TSValues all in the array 'genTSValues'
         */
-        void setValuesTS(std::string symbol, int intervalLength, int intervalAmount);
+        void setValuesTS(std::string symbol, std::string intervalLength, std::string intervalAmount);
 
 
         //EXCHANGE RATE SETTERS (DONT NEED?)
@@ -126,10 +127,11 @@ class GeneralInfo{
         void setValuesCC(std::string symbol1, std::string symbol2, double amount, std::string dateTimeString);
 
         //HELPER FUNCTIONS
+        std::string ConvertFromUnixTime(std::string unixTime);
     private:
         bool ValidateDateTime(const std::string& dateTimeString);
 
-        std::string ConvertFromUnixTime(int unixTime);
+        // std::string ConvertFromUnixTime(std::string unixTime);
 };
 
 
