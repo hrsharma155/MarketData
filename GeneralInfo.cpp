@@ -181,11 +181,151 @@ void GeneralInfo::setValuesER(std::string symbol1, std::string symbol2, std::str
     fclose(fp);
 
 }
-void GeneralInfo::setValuesER(std::string symbol1, std::string symbol2){}
+void GeneralInfo::setValuesER(std::string symbol1, std::string symbol2){
+    CURL *hnd = curl_easy_init();
+
+    std::string URL = "https://api.twelvedata.com/exchange_rate?symbol=" + symbol1 + "/" + symbol2 + "&apikey=41a5696d75774b8eb6929a1dc1af50d6";
+    std::string readBuffer; // String to store the response data
+    if (hnd) {
+        //std::string readBuffer; // String to store the response data
+        curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_easy_setopt(hnd, CURLOPT_URL, URL.c_str());
+        curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, Parse::WriteCallBack); // Use the member function of Parse class
+        curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &readBuffer); // Pass the instance of Parse class
+        CURLcode ret = curl_easy_perform(hnd); // Perform the CURL request
+        if (ret == CURLE_OK) {
+            Parse::WriteToJSON(readBuffer); // Call WriteToJSON to process and save the data
+        }
+        curl_easy_cleanup(hnd); // Clean up CURL
+    }
+
+    FILE *fp = fopen("response.json", "r");
+
+
+  // Assuming 'readBuffer' contains the JSON data as a string
+    struct json_object *parsed_json = json_object_from_file("response.json"); //ADD EXCEPTION FOR IF NOT PARSED
+    if (!fp) {
+            throw std::runtime_error("Failed to open response.json for parsing");
+    }
+
+    struct json_object *symbol, *rate, *timestamp;
+
+    json_object_object_get_ex(parsed_json,"symbol", &symbol);
+    json_object_object_get_ex(parsed_json, "rate", &rate);
+    json_object_object_get_ex(parsed_json, "timestamp", &timestamp);
+   
+    valuesER.push_back(json_object_get_string(symbol));
+    valuesER.push_back(json_object_get_string(rate));
+    valuesER.push_back(json_object_get_string(timestamp));
+
+    // Cleanup JSON object
+    json_object_put(parsed_json);
+    fclose(fp);
+
+
+
+
+}
 
 //Currency exchange functions
-void GeneralInfo::setValuesCC(std::string symbool1, std::string symbol2, double amount){}
-void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, double amount, std::string dateTimeString){}
+void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, std::string amount){
+    CURL *hnd = curl_easy_init();
+   
+
+    std::string URL = "https://api.twelvedata.com/currency_conversion?symbol=" + symbol1 + "/" + symbol2 + "&amount=" + amount + "&apikey=41a5696d75774b8eb6929a1dc1af50d6";
+    std::string readBuffer; // String to store the response data
+    if (hnd) {
+        curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_easy_setopt(hnd, CURLOPT_URL, URL.c_str());
+        curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, Parse::WriteCallBack); // Use the member function of Parse class
+        curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &readBuffer); // Pass the instance of Parse class
+        CURLcode ret = curl_easy_perform(hnd); // Perform the CURL request
+        if (ret == CURLE_OK) {
+            Parse::WriteToJSON(readBuffer); // Call WriteToJSON to process and save the data
+        }
+        curl_easy_cleanup(hnd); // Clean up CURL
+    }
+
+    FILE *fp = fopen("response.json", "r");
+
+
+  // Assuming 'readBuffer' contains the JSON data as a string
+    struct json_object *parsed_json = json_object_from_file("response.json"); //ADD EXCEPTION FOR IF NOT PARSED
+    if (!fp) {
+            throw std::runtime_error("Failed to open response.json for parsing");
+    }
+
+    struct json_object *symbol, *rate, *timestamp, *amount1;
+
+    json_object_object_get_ex(parsed_json,"symbol", &symbol);
+    json_object_object_get_ex(parsed_json, "rate", &rate);
+    json_object_object_get_ex(parsed_json, "amount", &amount1);
+    json_object_object_get_ex(parsed_json, "timestamp", &timestamp);
+    //convert to correct time format 
+    std::string timestampStr = std::to_string(json_object_get_int64(timestamp));
+    std::string formattedTime = ConvertFromUnixTime(timestampStr);
+   
+    valuesCC.push_back(json_object_get_string(symbol));
+    valuesCC.push_back(json_object_get_string(rate));
+    valuesCC.push_back(json_object_get_string(amount1));
+    valuesCC.push_back(formattedTime);
+
+    // Cleanup JSON object
+    json_object_put(parsed_json);
+    fclose(fp);
+
+
+}
+void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, std::string amount, std::string dateTimeString){
+
+    CURL *hnd = curl_easy_init();
+   
+
+    std::string URL = "https://api.twelvedata.com/currency_conversion?symbol=" + symbol1 + "/" + symbol2 + "&amount=" + amount + "&date=" + dateTimeString + "&apikey=41a5696d75774b8eb6929a1dc1af50d6";
+    std::string readBuffer; // String to store the response data
+    if (hnd) {
+        curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_easy_setopt(hnd, CURLOPT_URL, URL.c_str());
+        curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, Parse::WriteCallBack); // Use the member function of Parse class
+        curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &readBuffer); // Pass the instance of Parse class
+        CURLcode ret = curl_easy_perform(hnd); // Perform the CURL request
+        if (ret == CURLE_OK) {
+            Parse::WriteToJSON(readBuffer); // Call WriteToJSON to process and save the data
+        }
+        curl_easy_cleanup(hnd); // Clean up CURL
+    }
+
+    FILE *fp = fopen("response.json", "r");
+
+
+  // Assuming 'readBuffer' contains the JSON data as a string
+    struct json_object *parsed_json = json_object_from_file("response.json"); //ADD EXCEPTION FOR IF NOT PARSED
+    if (!fp) {
+            throw std::runtime_error("Failed to open response.json for parsing");
+    }
+
+    struct json_object *symbol, *rate, *timestamp, *amount1;
+
+    json_object_object_get_ex(parsed_json,"symbol", &symbol);
+    json_object_object_get_ex(parsed_json, "rate", &rate);
+    json_object_object_get_ex(parsed_json, "amount", &amount1);
+    json_object_object_get_ex(parsed_json, "timestamp", &timestamp);
+    //convert to correct time format 
+    std::string timestampStr = std::to_string(json_object_get_int64(timestamp));
+    std::string formattedTime = ConvertFromUnixTime(timestampStr);
+   
+    valuesCC.push_back(json_object_get_string(symbol));
+    valuesCC.push_back(json_object_get_string(rate));
+    valuesCC.push_back(json_object_get_string(amount1));
+    valuesCC.push_back(formattedTime);
+
+    // Cleanup JSON object
+    json_object_put(parsed_json);
+    fclose(fp);
+
+
+
+}
 
 
 

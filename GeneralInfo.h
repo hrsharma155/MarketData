@@ -10,6 +10,7 @@ class GeneralInfo{
     public:
         std::vector<std::string> valuesTS;
         std::vector<std::string> valuesER;
+        std::vector<std::string> valuesCC;
         //TIME SERIES GETTERS
 
         //TIME SRIES --> setting info into vector for 1 big interval starting from current time and backwards  
@@ -119,19 +120,18 @@ class GeneralInfo{
             Run http request, use WriteCallback() and WriteToJson() to read and write to .json file
             Put all values in array vector 'valuesCC'..... <symbol1/symbol2, exchange rate, amount,  unix timestamp>
         */
-        void setValuesCC(std::string symbol1, std::string symbol2, double amount);
+        void setValuesCC(std::string symbol1, std::string symbol2, std::string amount);
         /*  Given company symbol1 and another company symbol2, amount, and dateTimeString. (http request will return rate & amount at specified time) 
             Run http request, use WriteCallback() and WriteToJson() to read and write to .json file
             Put all values in array vector 'valuesCC'..... <symbol1/symbol2, exchange rate, amount, unix timestamp>
         */
-        void setValuesCC(std::string symbol1, std::string symbol2, double amount, std::string dateTimeString);
+        void setValuesCC(std::string symbol1, std::string symbol2, std::string amount, std::string dateTimeString);
 
         //HELPER FUNCTIONS
-        std::string ConvertFromUnixTime(std::string unixTime);
     private:
+        std::string ConvertFromUnixTime(std::string unixTime);
         bool ValidateDateTime(const std::string& dateTimeString);
 
-        // std::string ConvertFromUnixTime(std::string unixTime);
 };
 
 
