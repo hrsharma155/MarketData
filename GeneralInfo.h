@@ -8,9 +8,16 @@
 class GeneralInfo{
     
     public:
-        std::vector<std::string> valuesTS;
-        std::vector<std::string> valuesER;
-        std::vector<std::string> valuesCC;
+        std::vector<std::string> *valuesTS;
+        std::vector<std::string> *valuesER;
+        std::vector<std::string> *valuesCC;
+
+
+        //Constructor: allocate memory on the heap.
+        GeneralInfo();
+        //Destructor: free allocated memory on heap after done using it.
+        ~GeneralInfo();
+
         //TIME SERIES GETTERS
 
         //TIME SRIES --> setting info into vector for 1 big interval starting from current time and backwards  
@@ -18,23 +25,23 @@ class GeneralInfo{
         //fetch and return open price that was set in the array 'genTSValues' via setter function. 
         //(openPrice = fetched open price from very last interval)
         //clear array after done
-        int getOpenTS();
+        std::string getOpenTS();
         //fetch and return high price that was set in the array 'genTSValues' via setter function
         //compare every single high in each interval. Take and return highest value.
         //clear array after done
-        int getHighTS();
+        std::string getHighTS();
         //fetch and return low price that was set in the array 'genTSValues' via setter function
         //compare every single low in each interval. Take and return the lowest value
         //clear array after done
-        int getLowTS();
+        std::string getLowTS();
         //fetch and return close price that was set in the array 'genTSValues' via setter function
         //closePrice = close price of the second interval. Why second? --> Edge case issue. Better accuracy 
         //clear array after done
-        int getCloseTS();
+        std::string getCloseTS();
         //fetch and return volume price that was set in the array 'genTSValues' via setter function
         //sum of all volumes across all intervals
         //clear array after done
-        int getVolumeTS();
+        std::string getVolumeTS();
 
 
         //TIME SERIES --> getting info for MULTIPLE intervals requested

@@ -12,6 +12,24 @@
 
 
 
+//MAKE THE VECTORS POINTERS 
+GeneralInfo::GeneralInfo() {
+    // Allocate memory for the vectors on the heap
+    valuesTS = new std::vector<std::string>(); 
+    valuesER = new std::vector<std::string>();
+    valuesCC = new std::vector<std::string>();
+
+}
+
+GeneralInfo::~GeneralInfo() {
+    // Free the allocated memory
+    delete valuesTS; 
+    delete valuesER;
+    delete valuesCC;
+}
+
+
+
 //Time series functions
 void GeneralInfo::setValuesTS(std::string symbol, std::string intervalLength){
     CURL *hnd = curl_easy_init();
@@ -63,13 +81,15 @@ void GeneralInfo::setValuesTS(std::string symbol, std::string intervalLength){
             json_object_object_get_ex(value, "close", &close);
             json_object_object_get_ex(value, "volume", &volume);
 
+            GeneralInfo();
+
             // Push back the values into the vector in the specified order
-            valuesTS.push_back(json_object_get_string(datetime));
-            valuesTS.push_back(json_object_get_string(open));
-            valuesTS.push_back(json_object_get_string(high));
-            valuesTS.push_back(json_object_get_string(low));
-            valuesTS.push_back(json_object_get_string(close));
-            valuesTS.push_back(json_object_get_string(volume));
+            valuesTS->push_back(json_object_get_string(datetime));
+            valuesTS->push_back(json_object_get_string(open));
+            valuesTS->push_back(json_object_get_string(high));
+            valuesTS->push_back(json_object_get_string(low));
+            valuesTS->push_back(json_object_get_string(close));
+            valuesTS->push_back(json_object_get_string(volume));
         }
 
         // Cleanup JSON object
@@ -126,13 +146,14 @@ void GeneralInfo::setValuesTS(std::string symbol, std::string intervalLength, st
         json_object_object_get_ex(value, "close", &close);
         json_object_object_get_ex(value, "volume", &volume);
 
+        GeneralInfo();
         // Push back the values into the vector in the specified order
-        valuesTS.push_back(json_object_get_string(datetime));
-        valuesTS.push_back(json_object_get_string(open));
-        valuesTS.push_back(json_object_get_string(high));
-        valuesTS.push_back(json_object_get_string(low));
-        valuesTS.push_back(json_object_get_string(close));
-        valuesTS.push_back(json_object_get_string(volume));
+        valuesTS->push_back(json_object_get_string(datetime));
+        valuesTS->push_back(json_object_get_string(open));
+        valuesTS->push_back(json_object_get_string(high));
+        valuesTS->push_back(json_object_get_string(low));
+        valuesTS->push_back(json_object_get_string(close));
+        valuesTS->push_back(json_object_get_string(volume));
     }
     // Cleanup JSON object
     json_object_put(parsed_json);
@@ -171,10 +192,15 @@ void GeneralInfo::setValuesER(std::string symbol1, std::string symbol2, std::str
     json_object_object_get_ex(parsed_json,"symbol", &symbol);
     json_object_object_get_ex(parsed_json, "rate", &rate);
     json_object_object_get_ex(parsed_json, "timestamp", &timestamp);
+    
+    std::string timestampStr = std::to_string(json_object_get_int64(timestamp));
+    std::string formattedTime = ConvertFromUnixTime(timestampStr);
    
-    valuesER.push_back(json_object_get_string(symbol));
-    valuesER.push_back(json_object_get_string(rate));
-    valuesER.push_back(json_object_get_string(timestamp));
+    GeneralInfo();
+
+    valuesER->push_back(json_object_get_string(symbol));
+    valuesER->push_back(json_object_get_string(rate));
+    valuesER->push_back(formattedTime);
 
     // Cleanup JSON object
     json_object_put(parsed_json);
@@ -213,10 +239,15 @@ void GeneralInfo::setValuesER(std::string symbol1, std::string symbol2){
     json_object_object_get_ex(parsed_json,"symbol", &symbol);
     json_object_object_get_ex(parsed_json, "rate", &rate);
     json_object_object_get_ex(parsed_json, "timestamp", &timestamp);
+
+    std::string timestampStr = std::to_string(json_object_get_int64(timestamp));
+    std::string formattedTime = ConvertFromUnixTime(timestampStr);
+
+    GeneralInfo();
    
-    valuesER.push_back(json_object_get_string(symbol));
-    valuesER.push_back(json_object_get_string(rate));
-    valuesER.push_back(json_object_get_string(timestamp));
+    valuesER->push_back(json_object_get_string(symbol));
+    valuesER->push_back(json_object_get_string(rate));
+    valuesER->push_back(formattedTime);
 
     // Cleanup JSON object
     json_object_put(parsed_json);
@@ -265,10 +296,13 @@ void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, std::str
     std::string timestampStr = std::to_string(json_object_get_int64(timestamp));
     std::string formattedTime = ConvertFromUnixTime(timestampStr);
    
-    valuesCC.push_back(json_object_get_string(symbol));
-    valuesCC.push_back(json_object_get_string(rate));
-    valuesCC.push_back(json_object_get_string(amount1));
-    valuesCC.push_back(formattedTime);
+
+    GeneralInfo();
+
+    valuesCC->push_back(json_object_get_string(symbol));
+    valuesCC->push_back(json_object_get_string(rate));
+    valuesCC->push_back(json_object_get_string(amount1));
+    valuesCC->push_back(formattedTime);
 
     // Cleanup JSON object
     json_object_put(parsed_json);
@@ -313,11 +347,12 @@ void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, std::str
     //convert to correct time format 
     std::string timestampStr = std::to_string(json_object_get_int64(timestamp));
     std::string formattedTime = ConvertFromUnixTime(timestampStr);
-   
-    valuesCC.push_back(json_object_get_string(symbol));
-    valuesCC.push_back(json_object_get_string(rate));
-    valuesCC.push_back(json_object_get_string(amount1));
-    valuesCC.push_back(formattedTime);
+    
+    GeneralInfo();
+    valuesCC->push_back(json_object_get_string(symbol));
+    valuesCC->push_back(json_object_get_string(rate));
+    valuesCC->push_back(json_object_get_string(amount1));
+    valuesCC->push_back(formattedTime);
 
     // Cleanup JSON object
     json_object_put(parsed_json);
@@ -330,11 +365,21 @@ void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, std::str
 
 
 //Time series single interval getters
-int GeneralInfo::getOpenTS(){}
-int GeneralInfo::getHighTS(){}
-int GeneralInfo::getLowTS(){}
-int GeneralInfo::getCloseTS(){}
-int GeneralInfo::getVolumeTS(){}
+std::string GeneralInfo::getOpenTS(){
+    return valuesTS->at(1);
+}
+std::string GeneralInfo::getHighTS(){
+    return valuesTS->at(2);
+}
+std::string GeneralInfo::getLowTS(){
+    return valuesTS->at(3);
+}
+std::string GeneralInfo::getCloseTS(){
+    return valuesTS->at(4);
+}
+std::string GeneralInfo::getVolumeTS(){
+    return valuesTS->at(5);
+}
 //Time series all intervals getters
 std::vector<std::string> GeneralInfo::getTimeStampTS(){}
 std::vector<double> GeneralInfo::getAllHighTS(){}
