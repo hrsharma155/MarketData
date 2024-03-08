@@ -12,24 +12,40 @@ int main() {
 
     // setValuesTS(3 paramaters)
     // GeneralInfo dataReport;
-    // std::string l = "AAPL";
-    // dataReport.setValuesTS("AAPL", "5min", "3");
+    // dataReport.setValuesTS("AAPL", "5min");
     // int i= 1;
     // int j = 1;
-    // for (const auto& value : dataReport.valuesTS) {
-    // std::cout << value << ' ';
-    // std::cout << "\n";
-    // if(i == (6*j)){
-    // std::cout << "\n";
-    // j++;
-    // }
-    // i++;
+
+    // for(int k =0; k < dataReport.valuesTS->size(); k++){
+    //     std::cout << dataReport.valuesTS->at(k) << ' ';
+    //     std::cout << "\n";
+    //     if(i == (6*j)){
+    //         std::cout << "\n";
+    //         j++;
+    //     }
+    //     i++;
 
     // }
 
-    // std::cout << "\n";
 
-    
+    // std::cout << "\n";
+    // std::cout << "\n";
+    // std::cout << "\n";
+    // std::cout << dataReport.getOpenTS();
+    //dataReport.~GeneralInfo();// free allocated memory
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //EXCHANGE RATE TESTS
 
@@ -41,13 +57,16 @@ int main() {
     // dataReport.setValuesER(symb1, symb2);
     // int i= 1;
     // int j = 1;
-    // for (const auto& value : dataReport.valuesER) {
-    //     std::cout << value << ' ';
+    // for(int k =0; k < dataReport.valuesER->size(); k++){
+    //     std::cout << dataReport.valuesER->at(k) << ' ';
     //     std::cout << "\n";
-    
+    //     if(i == (6*j)){
+    //         std::cout << "\n";
+    //         j++;
+    //     }
+    //     i++;
 
     // }
-
     // std::cout << "\n";
 
 
@@ -63,15 +82,22 @@ int main() {
     std::string symb2 = "USD";
     std::string amount = "400";
     std::string dateTimeString = "1995-01-02";
-    dataReport.setValuesCC(symb1, symb2, amount, dateTimeString);
+    dataReport.setValuesCC(symb1, symb2, amount);
     int i= 1;
     int j = 1;
-    for (const auto& value : dataReport.valuesCC) {
-        std::cout << value << ' ';
+
+
+     for(int k =0; k < dataReport.valuesCC->size(); k++){
+        std::cout << dataReport.valuesCC->at(k) << ' ';
         std::cout << "\n";
-    
+        if(i == (6*j)){
+            std::cout << "\n";
+            j++;
+        }
+        i++;
 
     }
+    
 
     std::cout << "\n";
 

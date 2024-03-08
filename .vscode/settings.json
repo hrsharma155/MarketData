@@ -43,6 +43,7 @@
         "random": "cpp",
         "string": "cpp",
         "string_view": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "ctime": "cpp"
     }
 }
