@@ -48,42 +48,45 @@ class GeneralInfo{
 
         //iterate through array and fetch timeStamp for each interval. Ordering from current time --> before current time
         //cout or put in an array
-        std::vector<std::string> getTimeStampTS();
+        std::vector<std::string> getAllTimeStampTS();
         //iterate through array and fetch every single highPrice value. Ordering from current time --> before current time
         //return as a vector. Clear 'genTSValues'
-        std::vector<double> getAllHighTS();
+        std::vector<std::string> getAllHighTS();
         //iterate through array and fetch every single lowPrice value. Ordering from current time --> before current time
         //cout or put in an array. Clear 'genTSValues'
-        std::vector<double> getAllLowTS();
+        std::vector<std::string> getAllLowTS();
+        //iterate through array and fetch every single openPrice value. Ordering from current time --> before current time
+        //cout or put in an array. Clear 'genTSValues'
+        std::vector<std::string> getAllOpenTS();
         //iterate through array and fetch every single closePrice value. Ordering from current time --> before current time
         //cout or put in an array. Clear 'genTSValues'
-        std::vector<double> getAllCloseTS();
+        std::vector<std::string> getAllCloseTS();
         //iterate through array and fetch every single volume value. Ordering from current time --> before current time
         //cout or put in an array. Clear 'genTSValues'
-        std::vector<double> getAllVolumeTS();
+        std::vector<std::string> getAllVolumeTS();
 
 
         //EXCHANGE RATE GETTERS (DONT NEED?)
 
         //fetch exchange rate from vector 'valuesER' ..... 2nd element
         //clear 'valuesER'
-        double getStockExchangeRateER();
+        std::string getStockExchangeRateER();
         //fetch time stamp in readable form. 
         //Param: Unix timestamp in seconds. 
         //Time stamp should be 3rd element in 'valuesER'
         //clear 'valuesER'
-        std::string getTimeStampER(int seconds);
+        std::string getTimeStampER();
 
 
 
         //CURRENCY CONVERSION GETTERS   (OVERWRITES EXCHANGE RATE?)
         
         //get exchange rate of two currencies. 2nd element in vector 'valuesCC'
-        double getCurrencyExchangeRateCC();
+        std::string getCurrencyExchangeRateCC();
         //get currency exchange amount from two currencies. How much is 5 USD in CAD? 3rd element in 'valuesCC' vector
-        double getCurrencyExchangeAmountCC();
+        std::string getCurrencyExchangeAmountCC();
         //get time as a string given unix time in seconds
-        std::string getTimeStampCC(int seconds);
+        std::string getTimeStampCC();
 
 
 

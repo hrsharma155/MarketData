@@ -12,7 +12,7 @@ int main() {
 
     // setValuesTS(3 paramaters)
     // GeneralInfo dataReport;
-    // dataReport.setValuesTS("AAPL", "5min");
+    // dataReport.setValuesTS("AAPL", "5min", "3");
     // int i= 1;
     // int j = 1;
 
@@ -31,9 +31,30 @@ int main() {
     // std::cout << "\n";
     // std::cout << "\n";
     // std::cout << "\n";
-    // std::cout << dataReport.getOpenTS();
-    //dataReport.~GeneralInfo();// free allocated memory
+    // dataReport.getAllTimeStampTS();
+    // std::cout << "\n";
+    // std::cout << "\n";
+    // dataReport.getAllHighTS();
+    // std::cout << "\n";
+    // std::cout << "\n";
+    // dataReport.getAllLowTS();
+    // std::cout << "\n";
+    // std::cout << "\n";
+    // dataReport.getAllOpenTS();
+    // std::cout << "\n";
+    // std::cout << "\n";
+    // dataReport.getAllCloseTS();
+    // std::cout << "\n";
+    // std::cout << "\n";
+    // std::vector<std::string> temp1 = dataReport.getAllVolumeTS();
+    // for(int j = 0; j<temp1.size(); j++){
+    //     std::cout << temp1.at(j);
+    //     std::cout << "\n";
+    // }
 
+    // std::cout << "\n";
+
+    //dataReport.~GeneralInfo(); // free allocated memory
 
 
 

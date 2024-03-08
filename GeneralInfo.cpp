@@ -357,12 +357,7 @@ void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, std::str
     // Cleanup JSON object
     json_object_put(parsed_json);
     fclose(fp);
-
-
-
 }
-
-
 
 //Time series single interval getters
 std::string GeneralInfo::getOpenTS(){
@@ -381,20 +376,115 @@ std::string GeneralInfo::getVolumeTS(){
     return valuesTS->at(5);
 }
 //Time series all intervals getters
-std::vector<std::string> GeneralInfo::getTimeStampTS(){}
-std::vector<double> GeneralInfo::getAllHighTS(){}
-std::vector<double> GeneralInfo::getAllLowTS(){}
-std::vector<double> GeneralInfo::getAllCloseTS(){}
-std::vector<double> GeneralInfo::getAllVolumeTS(){}
+std::vector<std::string> GeneralInfo::getAllTimeStampTS(){
+    //vector to return holding all the high values
+    std::vector<std::string> temp;
+
+    int intervalAm = (valuesTS->size() / 6);
+    int index = 0;
+    //use equation: val + 6(interval).... for timestamp, val = 0
+    for(int i = 0; i < intervalAm; i++){
+        index = 0 + 6*(i);
+        temp.push_back(valuesTS->at(index));
+    }
+
+    return temp;
+
+}
+std::vector<std::string> GeneralInfo::getAllHighTS(){
+    //vector to return holding all the high values
+    std::vector<std::string> temp;
+
+    int intervalAm = (valuesTS->size() / 6);
+    int index = 0;
+    //use equation: val + 6(interval).... for high, val = 2
+    for(int i = 0; i < intervalAm; i++){
+        index = 2 + 6*(i);
+        temp.push_back(valuesTS->at(index));
+    }
+
+    return temp;
+
+}
+std::vector<std::string> GeneralInfo::getAllLowTS(){
+    //vector to return holding all the high values
+    std::vector<std::string> temp;
+
+    int intervalAm = (valuesTS->size() / 6);
+    int index = 0;
+    //use equation: val + 6(interval).... for low, val = 3
+    for(int i = 0; i < intervalAm; i++){
+        index = 3 + 6*(i);
+        temp.push_back(valuesTS->at(index));
+    }
+
+    return temp;
+
+}
+std::vector<std::string> GeneralInfo::getAllOpenTS(){
+    //vector to return holding all the high values
+    std::vector<std::string> temp;
+
+    int intervalAm = (valuesTS->size() / 6);
+    int index = 0;
+    //use equation: val + 6(interval).... for open, val = 1
+    for(int i = 0; i < intervalAm; i++){
+        index = 1 + 6*(i);
+        temp.push_back(valuesTS->at(index));
+    }
+
+    return temp;
+
+}
+std::vector<std::string> GeneralInfo::getAllCloseTS(){
+
+    //vector to return holding all the high values
+    std::vector<std::string> temp;
+
+    int intervalAm = (valuesTS->size() / 6);
+    int index = 0;
+    //use equation: val + 6(interval).... for close, val = 4
+    for(int i = 0; i < intervalAm; i++){
+        index = 4 + 6*(i);
+        temp.push_back(valuesTS->at(index));
+    }
+
+    return temp;
+}
+std::vector<std::string> GeneralInfo::getAllVolumeTS(){
+
+    //vector to return holding all the high values
+    std::vector<std::string> temp;
+
+    int intervalAm = (valuesTS->size() / 6);
+    int index = 0;
+    //use equation: val + 6(interval).... for volume, val = 5
+    for(int i = 0; i < intervalAm; i++){
+        index = 5 + 6*(i);
+        temp.push_back(valuesTS->at(index));
+    }
+
+    return temp;
+}
 
 //Exchange rate getters
-double GeneralInfo::getStockExchangeRateER(){}
-std::string GeneralInfo::getTimeStampER(int seconds){}
+std::string GeneralInfo::getStockExchangeRateER(){
+    return valuesER->at(1);
+}
+std::string GeneralInfo::getTimeStampER(){
+    return valuesER->at(2);
+}
 
 //Currency conversion getters
-double GeneralInfo::getCurrencyExchangeRateCC(){}
-double GeneralInfo::getCurrencyExchangeAmountCC(){}
-std::string getTimeStampCC(int seconds){}
+std::string GeneralInfo::getCurrencyExchangeRateCC(){
+    return valuesCC->at(1);
+}
+std::string GeneralInfo::getCurrencyExchangeAmountCC(){
+    return valuesCC->at(2);
+}
+std::string GeneralInfo::getTimeStampCC(){
+    return valuesCC->at(3);
+}
 
 //Real time price getter
 double GeneralInfo::getRealTimePriceRTP(std::string symbol){}
