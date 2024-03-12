@@ -4,6 +4,11 @@
 #include <string>
 #include <vector>
 
+//STILL NEED:
+
+//getters for specific intervals
+//getters for the highest/lowest values of {high, low, open, close}
+//public var for keeping track of # of intervals in the TS vector?
 
 class GeneralInfo{
     
