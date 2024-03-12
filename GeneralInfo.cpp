@@ -490,7 +490,6 @@ std::string GeneralInfo::getTimeStampCC(){
 double GeneralInfo::getRealTimePriceRTP(std::string symbol){}
 
 //HELPER FUNCTIONS
-bool GeneralInfo::ValidateDateTime(const std::string& dateTimeString){}
 std::string GeneralInfo::ConvertFromUnixTime(std::string unixTime){
     std::time_t result = std::stol(unixTime);
     std::tm *ptm = std::localtime(&result);
@@ -501,5 +500,5 @@ std::string GeneralInfo::ConvertFromUnixTime(std::string unixTime){
     return std::string(buffer);
 
 }
-
+bool GeneralInfo::ValidateDateTime(const std::string& dateTimeString){}
 #endif 
