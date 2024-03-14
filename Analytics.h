@@ -130,6 +130,60 @@ class Analytics{
         /// @param typeOfData type of data being one of: {high, low, open, close}
         /// @return vector: <date,upper,middle,lower.......date,upper,middle,lower>
         std::vector<std::string> BBANDS(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string maType, std::string stdDeviationMultiplier, std::string typeOfData);
+        /// @brief Balance of Power (BOP) measures buying/selling pressure of an asset. 1 to -1 where 1 indicates high
+        ///        BOP = (close - open) / (high - low)
+        /// @param symbol company symbol
+        /// @param intervalLength length of each interval
+        /// @param intervalAmount # of intervals
+        /// @return vector: <date,BOP.....date,BOP>
+        std::vector<std::string> BOP(std::string symbol, std::string intervalLength, std::string intervalAmount);
+        /// @brief Commodity Channel Index (CCI). 
+        ///        1. Calc typical price... TP = (high+low+close) / 3
+        ///        2. SMA of TP..... (summation of TP over N periods) / N
+        ///        3. Mean Deviation = (Summation of |TP - SMAofTP|) / N
+        ///        4. CCI = (TP - SMAofTP) / (0.015 * Mean Deviation)
+        /// @param symbol company symbol
+        /// @param intervalLength length of each interval
+        /// @param intervalAmount # of intervals. Reconmmended 20.
+        /// @return vector: <date,CCI.....date,CCI>
+        std::vector<std::string> CCI(std::string symbol, std::string intervalLength, std::string intervalAmount);
+        /// @brief find the ceiling of a data in a series
+        /// @param symbol company
+        /// @param intervalLength length of each interval
+        /// @param intervalAmount  # of intervals.
+        /// @param typeOfData one of : {high, low, close, open} DEFAULT to: close
+        /// @return vector: <date,CEIL......date,CEIL>
+        std::vector<std::string> CEIL(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string typeOfData);
+        /// @brief Chande Momentum Oscillator (CMO). between 100 and -100. +50 means overbought conditions, suggesting a reverasal. -50 means oversold, suggesting upward reversal
+        ///        1. Determine number of intervals calculating for
+        ///        2. Calculate price changes for each period. current period price change = (currentPerData - prevPerData)
+        ///        3. Separate Gains and Losses. For each period, categorize as gain (+value) or loss (-value)
+        ///        4. Sum all of the gains, and Sum all of the losses
+        ///        5. Calculate CMO. CMO = ((sum of gains - sum of losses) / (sum of gains + sum of losses)) * 100
+        /// @param symbol company symbol
+        /// @param intervalLength length of each interval
+        /// @param intervalAmount # of intervals.
+        /// @param typeOfData one of: {high, low, open, close} DEFAULT to: close
+        /// IMPORTANT: for raw data request, request for (intervalAmount +1) intervals. (need previous data for current)
+        /// @return vector: <date,CMO......date,CMO>
+        std::vector<std::string> CMO(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string typeOfData);
+        /// @brief Choppock Curve (COPPOCK). 
+        ///        1. Calc rate of change. ROC(long n) =( (currentValue - value n periods ago) / (value n periods ago) ) * 100    DO for each interval in 'maIntervals'
+        ///        2. Calc rate of change. ROC(short n) = ( (currentValue - value n periods ago) / (value n periods ago) ) * 100  DO for each interval in 'maIntervals'
+        ///        3. Add ROC(long n) and ROC (short n). Do this for each period going forward
+        ///        4. For each interval for 'maIntervals' , calculate the sum of ROC(long) and ROC(short)
+        ///        5. Take a WMA of the last 'maIntervals' values. DO this for each period going forward until you hit most recent interval. WMA(value, maIntervals)
+        /// @param  
+        /// @param intervalLength length of each interval
+        /// @param intervalAmount # of intervals.
+        /// @param typeOfData One of {high, low, open, close}. Reconmmended: close
+        /// @param maType type of moving average. Reconmmended: WMA
+        /// @param maIntervals how many intervals for the moving average to go over. Reconmended: 10
+        /// @param longROCPeriod Long number of periods ago. Reconmmended 14 month
+        /// @param shortROCPeriod Short number of periods ago. Reconmnended 11 month
+        /// IMPORTANT: request raw data amount of (intervalAmount + longROCPeriod)
+        /// @return 
+        std::vector<std::string> COPPOCK(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string typeOfData, std::string maType, std::string maIntervals, std::string longROCPeriod, std::string shortROCPeriod);
 
 
 
@@ -168,6 +222,9 @@ class Analytics{
         /// @param value data attribute you want to measure the moving average of.
         /// @return return EMA calculated up to the specified period #
         double ExponentialMovingAverage(double value, int timePeriod);
+        double WeightedMovingAverage(double value, int timePeriod);
+        double SimpleMovingAverage(double value, int timePeriod);
+
 
 
 
