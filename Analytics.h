@@ -562,6 +562,253 @@ class Analytics{
         /// @param seriesType Price type on which the MAXINDEX is calculated, typically 'close'.
         /// @return A vector containing dateTime and MAXINDEX pairs in the form <dateTime, MAXINDEX, ...>.
         std::vector<std::string> MAXINDEX(std::string symbol, std::string intervalLength, int timePeriod = 9, std::string seriesType = "close");
+        /// @brief McGinley Dynamic indicator keeps all the benefits from the moving averages but adds an adjustment to market speed.
+        /// McGinley Dynamic (MD) = MD_previous + (Price - MD_previous) / (k * (Price / MD_previous) ^ 4)
+        /// where:
+        /// - MD_previous is the previous McGinley Dynamic value
+        /// - Price is the current price
+        /// - k is a constant, typically set to 0.6 (though it can vary based on the data)
+        /// - The term (Price / MD_previous) ^ 4 is used to adjust the indicator's sensitivity to market speed
+        /// @param symbol Symbol for the company you are inquiring about
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod Number of periods to average over, typically set to 14.
+        /// @return A vector containing <dateTime, mcginley_dynamic> pairs for each interval.
+        std::vector<std::string> MCGINLEY_DYNAMIC(std::string symbol, std::string intervalLength, int timePeriod = 14);
+        /// @brief Median Price (MEDPRICE) calculates the median level of prices for a given symbol and interval.
+        /// MEDPRICE = (High + Low) / 2 .... for the current interval
+        /// @param symbol Symbol for the company you are inquiring about
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @return A vector containing <dateTime, medprice> pairs for each interval.
+        std::vector<std::string> MEDPRICE(std::string symbol, std::string intervalLength, std::string intervalAmount);
+        /// @brief Money Flow Index (MFI) calculates the flow of money into and out of a security over a specified period of time.
+        ///        The MFI is an oscillator that uses both price and volume to measure buying and selling pressure.
+        ///        It's a component of the typical price multiplied by volume, comparing the positive and negative money flows.
+        ///        MFI = 100 - (100 / (1 + (Positive Money Flow / Negative Money Flow)))
+        /// @param symbol Symbol for the company you are inquiring about
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod The number of periods over which the MFI is calculated, typically 14.
+        /// @return A vector containing <dateTime, MFI value> pairs for each interval.
+        std::vector<std::string> MFI(std::string symbol, std::string intervalLength, int timePeriod = 14);
+        /// @brief MidPoint over period calculates the midpoint of the highest and lowest values in a given period.
+        ///        MIDPOINT = (Highest Value + Lowest Value) / 2
+        /// @param symbol Symbol for the company you are inquiring about
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod The number of periods over which the midpoint is calculated, typically 9.
+        /// @param dataType close, high, open, low ???
+        /// @return A vector containing <dateTime, midpoint value> pairs for each interval.
+        std::vector<std::string> MIDPOINT(std::string symbol, std::string intervalLength, int timePeriod = 9, std::string dataType);
+        /// @brief MidPoint Price over period (MIDPRICE) calculates the midpoint of the highest high and lowest low over a specified period.
+        ///        MIDPRICE = (Highest High + Lowest Low) / 2
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod The number of periods over which the MIDPRICE is calculated, typically 9.
+        /// @param intervalAmount amount of intervals
+        /// @return A vector containing <dateTime, MIDPRICE value> pairs for each interval.
+        std::vector<std::string> MIDPRICE(std::string symbol, std::string intervalLength, int timePeriod = 9, std::string intervalAmount);
+        /// @brief Calculates the lowest value over a specified period for a given symbol and interval.
+        ///        MIN is calculated as the minimum value within the specified time period based on the series type.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount Number of data points to retrieve, represents the output size.
+        /// @param seriesType Price type on which the MIN is calculated, typically 'close'.
+        /// @param timePeriod Number of periods to average over, typically 9.
+        /// @return A vector containing dateTime and MIN value pairs in the form <dateTime, MIN, ...>.
+        std::vector<std::string> MIN(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string seriesType = "close", int timePeriod = 9);
+        /// @brief Calculates the index of the lowest value over a specified period for a given symbol and interval.
+        ///        MININDEX returns the position (index) of the minimum value within the specified time period based on the series type.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount Number of data points to retrieve, represents the output size.
+        /// @param seriesType Price type on which the MININDEX is calculated, typically 'close'.
+        /// @param timePeriod Number of periods to average over, typically 9.
+        /// @return A vector containing dateTime and MININDEX value pairs in the form <dateTime, MININDEX, ...>.
+        std::vector<std::string> MININDEX(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string seriesType = "close", int timePeriod = 9);
+        /// @brief Calculates the lowest and highest values over a specified period (MINMAX).
+        ///        MINMAX provides the minimum and maximum values within a given time frame, offering insights into the range of price movements.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount Number of data points to retrieve, reflecting how many intervals you want the data for.
+        /// @param seriesType Price type on which technical indicator is calculated, typically 'close'.
+        /// @param timePeriod Number of periods to average over. Takes values in the range from 1 to 800, defaulting to 9.
+        /// @return A vector containing pairs of dateTime, min, and max values in the form <dateTime, min, max, ...>.
+        std::vector<std::string> MINMAX(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string seriesType = "close", int timePeriod = 9);
+        /// @brief Calculates the indexes of the lowest and highest values over a specified period (MINMAXINDEX).
+        ///        MINMAXINDEX provides the indexes where the minimum and maximum values occur within a given time frame, offering insights into the timing of peak and trough movements.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount Number of data points to retrieve, reflecting how many intervals you want the data for.
+        /// @param seriesType Price type on which technical indicator is calculated, typically 'close'.
+        /// @param timePeriod Number of periods to average over. Takes values in the range from 1 to 800, defaulting to 9.
+        /// @return A vector containing pairs of dateTime, minIdx, and maxIdx values in the form <dateTime, minIdx, maxIdx, ...>.
+        std::vector<std::string> MINMAXINDEX(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string seriesType = "close", int timePeriod = 9);
+        /// @brief Calculates the Momentum (MOM) of an asset by comparing its current price with the price from N periods ago.
+        ///        MOM = CurrentPrice - Price(N periods ago)
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount Number of data points to retrieve, reflecting how many intervals you want the data for.
+        /// @param seriesType Price type on which technical indicator is calculated, typically 'close'.
+        /// @param timePeriod Number of periods to compare the current price against, defaulting to 9.
+        /// @return A vector containing pairs of dateTime and MOM values in the form <dateTime, MOM, ...>.
+        std::vector<std::string> MOM(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string seriesType = "close", int timePeriod = 9);
+        /// @brief Calculates the multiplication of values of two specified time series for an asset.
+        ///        MULT = Value(series_type_1) * Value(series_type_2)
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount Number of data points to retrieve, reflecting how many intervals you want the data for.
+        /// @param seriesType1 Price type used as the first part of the technical indicator, typically 'open'.
+        /// @param seriesType2 Price type used as the second part of the technical indicator, typically 'close'.
+        /// @return A vector containing pairs of dateTime and MULT values in the form <dateTime, MULT, ...>.
+        std::vector<std::string> MULT(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string seriesType1 = "open", std::string seriesType2 = "close");
+        /// @brief Calculates the Normalized Average True Range (NATR) of an asset, offering a normalized measure of volatility.
+        ///        NATR is useful for comparing volatility across different price levels. 
+        ///        NATR = (ATR / Close) * 100
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount Number of data points to retrieve, reflecting how many intervals you want the data for.
+        /// @param timePeriod Number of periods to average over for the ATR calculation, typically 14.
+        /// @return A vector containing pairs of dateTime and NATR values in the form <dateTime, NATR, ...>.
+        std::vector<std::string> NATR(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string timePeriod = "14");
+        /// @brief Calculates the On Balance Volume (OBV) of an asset, a momentum indicator that uses volume flow
+        ///        to predict changes in stock price. The OBV is calculated by adding or subtracting each day's volume
+        ///        to the cumulative total when the stock closes up or down, respectively.
+        ///      OBV = Previous OBV + Current Volume if Close > Previous Close
+        ///            Previous OBV - Current Volume if Close < Previous Close
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount Number of data points to retrieve, reflecting how many intervals you want the data for.
+        /// @return A vector containing pairs of dateTime and OBV values in the form <dateTime, OBV, ...>.
+        std::vector<std::string> OBV(std::string symbol, std::string intervalLength, std::string intervalAmount);
+        /// @brief Calculates the %B Indicator (PERCENT_B), measuring the position of the asset price relative to the upper and lower Bollinger Bands.
+        ///        %B = (Price - Lower Band) / (Upper Band - Lower Band)
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount Number of data points to retrieve, reflecting how many intervals you want the data for.
+        /// @param timePeriod Number of periods over which the Bollinger Bands are calculated, typically 20.
+        /// @param maType Type of Moving Average used in Bollinger Bands calculation, typically "SMA".
+        /// @param sd Number of standard deviations for the width of the Bollinger Bands, typically 2.
+        /// @return A vector containing pairs of dateTime and PERCENT_B values in the form <dateTime, PERCENT_B, ...>.
+        std::vector<std::string> PERCENT_B(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string timePeriod = "20", std::string maType = "SMA", std::string sd = "2");
+        /// @brief Calculates Pivot Points (High/Low) (PIVOT_POINTS_HL), used to foresee potential price reversals.
+        ///        Pivot Points are calculated as the average of the high, low, and closing prices from the previous trading session.
+        ///     Pivot Point High (H) = (Highest High + Lowest Low + Close) / 3
+        ///     Pivot Point Low (L) = (Highest High + Lowest Low + Close) / 3
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount Number of data points to retrieve, reflecting how many intervals you want the data for.
+        /// @param timePeriod Number of periods to average over for calculating high and low pivot points, typically 10.
+        /// @return A vector containing pairs of dateTime and Pivot Points values in the form <dateTime, pivot_point_h, pivot_point_l, ...>.
+        std::vector<std::string> PIVOT_POINTS_HL(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string timePeriod = "10");
+        /// @brief Calculates Percentage Price Oscillator (PPO) which shows the relationship between two Moving Averages (MA) as a percentage.
+        ///        PPO = ((Fast MA - Slow MA) / Slow MA) * 100
+        /// @param symbol The ticker symbol for the financial instrument.
+        /// @param intervalLength The time period between each data point (e.g., 1min, 5min, 15min, etc.).
+        /// @param fastPeriod The number of periods to consider for the fast moving average, defaulting to 12.
+        /// @param slowPeriod The number of periods to consider for the slow moving average, defaulting to 26.
+        /// @param maType The type of Moving Average to be used, defaulting to "SMA".
+        /// @param seriesType The price type on which the technical indicator is calculated, defaulting to "close".
+        /// @param intervalAmount The number of data points to calculate the PPO over.
+        /// @return A vector of pairs, each containing a datetime and the corresponding PPO value for that time.
+        std::vector<std::pair<std::string, double>> PPO(std::string symbol, std::string intervalLength, int fastPeriod = 12, int slowPeriod = 26, std::string maType = "SMA", std::string seriesType = "close", int intervalAmount);
+        /// @brief Calculates the Rate of Change (ROC) which measures the percentage change in price between the current price and the price a certain number of periods ago.
+        ///     ROC = ((Current Price / Price 'n' Periods Ago) - 1) * 100
+        /// @param symbol The ticker symbol for the financial instrument.
+        /// @param intervalLength The time period between each data point (e.g., 1min, 5min, 15min, etc.).
+        /// @param intervalAmount The number of data points to calculate the ROC over, defaults to 9.
+        /// @return A vector of pairs, each containing a datetime and the corresponding ROC value for that time.
+        std::vector<std::pair<std::string, double>> ROC(std::string symbol, std::string intervalLength, int intervalAmount = 9);
+        /// @brief Calculates the Rate of Change Percentage (ROCP) which measures the percentage difference between the current price and the price a certain number of periods ago.
+        ///     ROCP = (Current Price - Price 'n' Periods Ago) / Price 'n' Periods Ago
+        /// @param symbol The ticker symbol for the financial instrument.
+        /// @param intervalLength The time period between each data point (e.g., 1min, 5min, 15min, etc.).
+        /// @param intervalAmount The number of data points to calculate the ROCP over, defaults to 9.
+        /// @return A vector of pairs, each containing a datetime and the corresponding ROCP value for that time.
+        std::vector<std::pair<std::string, double>> ROCP(std::string symbol, std::string intervalLength, int intervalAmount = 9);
+        /// @brief Calculates the Rate of Change Ratio (ROCR) which measures the ratio of the current price to the price a certain number of periods ago.
+        ///     ROCR = Current Price / Price 'n' Periods Ago
+        /// @param symbol The ticker symbol for the financial instrument.
+        /// @param intervalLength The time period between each data point (e.g., 1min, 5min, 15min, etc.).
+        /// @param intervalAmount The number of data points to calculate the ROCR over, defaults to 9.
+        /// @return A vector of pairs, each containing a datetime and the corresponding ROCR value for that time.
+        std::vector<std::pair<std::string, double>> ROCR(std::string symbol, std::string intervalLength, int intervalAmount = 9, std::string dataType);
+        /// @brief Calculates the Rate of Change Ratio 100 scale (ROCR100) which measures the ratio of the current price to the price a certain number of periods ago, scaled by 100.
+        ///      ROCR100 = (Current Price / Price 'n' Periods Ago) * 100
+        /// @param symbol The ticker symbol for the financial instrument.
+        /// @param intervalLength The time period between each data point (e.g., 1min, 5min, 15min, etc.).
+        /// @param intervalAmount The number of data points to calculate the ROCR100 over, defaults to 9.
+        /// @return A vector of pairs, each containing a datetime and the corresponding ROCR100 value for that time.
+        std::vector<std::pair<std::string, double>> ROCR100(std::string symbol, std::string intervalLength, int intervalAmount = 9, std::string dataType);
+        /// @brief Calculates the Relative Strength Index (RSI), a momentum indicator that measures the magnitude of recent price changes to evaluate overbought or oversold conditions.
+        ///        RSI = 100 - (100 / (1 + (average gain / average loss)))
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod The number of periods over which the RSI is calculated, with a common default of 14 periods.
+        /// @return A vector containing <dateTime, RSI value> pairs for each interval, indicating the RSI value at the corresponding datetime.
+        std::vector<std::string> RSI(std::string symbol, std::string intervalLength, int timePeriod = 14, std::string dataType = "close");
+        /// @brief Calculates the Relative Volume Indicator (RVOL) to compare current trading volume to past volume over a specified period.
+        ///        RVOL = Current Volume / Average Volume over 'time_period'
+        /// @param symbol The ticker symbol for the financial instrument (e.g., "AAPL").
+        /// @param intervalLength The time interval between data points (e.g., "1min").
+        /// @param timePeriod The number of time periods over which to average the volume, with a default of 14.
+        /// @return A vector containing pairs of datetime and RVOL values in the form <dateTime, RVOL, dateTime, RVOL, ... etc.>
+        std::vector<std::string> RVOL(std::string symbol, std::string intervalLength, int timePeriod = 14);
+        /// @brief Calculates the Parabolic SAR (SAR) to identify potential momentum in asset price movements.
+        ///        SAR = SARprevious + acceleration * (EP - SARprevious)
+        ///        Where:
+        ///        - SARprevious is the SAR value in the previous period.
+        ///        - acceleration is the acceleration factor, which increases by the acceleration factor every time a new EP (extreme point) is recorded.
+        ///        - EP is the highest high in the current uptrend or the lowest low in the current downtrend.
+        /// @param symbol The ticker symbol for the asset you're interested in.
+        /// @param intervalLength The length of each time interval (e.g., 1min, 5min, 15min).
+        /// @param acceleration The acceleration factor used to calculate the SAR, typically starting at 0.02.
+        /// @param maximum The maximum value the acceleration factor can reach, typically set to 0.2.
+        /// @return A vector containing pairs of date-time and SAR values in the form <dateTime, SAR, ...>.
+        std::vector<std::string> SAR(std::string symbol, std::string intervalLength, double acceleration, double maximum);
+        /// @brief Calculates the Parabolic SAR Extended (SAREXT), an enhanced version of the classic SAR with more flexible parameters.
+        ///        SAREXT is used to identify potential reversals in the market price direction of an asset.
+        /// @param symbol Symbol ticker of the instrument, e.g. AAPL, EUR/USD, ETH/BTC, etc.
+        /// @param intervalLength Interval between two consecutive points in the time series, supporting: 1min, 5min, 15min, 30min, 45min, 1h, 2h, 4h, 1day, 1week, 1month.
+        /// @param accelerationLimitLong The acceleration factor limit for long positions, defaulting to 0.02.
+        /// @param accelerationLimitShort The acceleration factor limit for short positions, defaulting to 0.02.
+        /// @param accelerationLong The initial acceleration factor for long positions, defaulting to 0.02.
+        /// @param accelerationMaxLong The maximum acceleration factor for long positions, defaulting to 0.2.
+        /// @param accelerationMaxShort The maximum acceleration factor for short positions, defaulting to 0.2.
+        /// @param accelerationShort The initial acceleration factor for short positions, defaulting to 0.02.
+        /// @param offsetOnReverse The offset applied when the position is reversed, defaulting to 0.
+        /// @param startValue The starting value for the SAR calculation, defaulting to 0.
+        /// @return A vector containing <dateTime, SAREXT value> pairs for each interval, indicating the SAR values for the specified parameters.
+        std::vector<std::string> SAREXT(std::string symbol, std::string intervalLength, double accelerationLimitLong, double accelerationLimitShort, double accelerationLong, double accelerationMaxLong, double accelerationMaxShort, double accelerationShort, double offsetOnReverse, double startValue);
+        /// @brief Transforms input data with square root, providing a smoother and normalized view of price data.
+        ///        SQRT transformation can be particularly useful for reducing the influence of outliers and making exponential growth appear linear.
+        ///        SQRT(value) = sqrt(value) .... for the current interval
+        /// @param symbol Symbol for the company or asset you are inquiring about
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param seriesType Price type on which the square root transformation is applied, typically 'close'.
+        /// @return A vector containing <dateTime, sqrtValue> pairs for each interval.
+        std::vector<std::string> SQRT(std::string symbol, std::string intervalLength, std::string seriesType = "close");
+        /// @brief Calculates the Standard Deviation (STDDEV) of a given symbol and interval to measure volatility and assess risks.
+        ///        Standard Deviation is a statistical measurement that sheds light on the amount of variation or dispersion from the average.
+        ///        A high standard deviation indicates a high level of volatility and potential risk, whereas a low standard deviation indicates stability.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod Number of periods over which the standard deviation is calculated, defaults to 9.
+        /// @param seriesType Price type on which the standard deviation is calculated, typically 'close'.
+        /// @param sd Number of standard deviations, defaults to 2, to scale the standard deviation if needed.
+        /// @return A vector containing <dateTime, stddevValue> pairs for each interval, where stddevValue is the calculated standard deviation.
+        std::vector<std::string> STDDEV(std::string symbol, std::string intervalLength, std::string seriesType = "close", int timePeriod = 9, int sd = 2);
+        /// @brief Calculates the Stochastic Oscillator, indicating momentum by comparing a closing price to its price range over a given period.
+        ///        The oscillator comprises two lines: %K (the fast line) and %D (the slow line, which is a moving average of %K).
+        /// @param symbol Symbol for the company or asset you are inquiring about
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param fastKPeriod Number of periods used to calculate the %K line, typically set to 14.
+        /// @param slowKPeriod Number of periods used to smooth the %K line, typically set to 1.
+        /// @param slowDPeriod Number of periods used to calculate the %D line, typically set to 3.
+        /// @param slowKMAType Type of Moving Average used to smooth the %K line, typically 'SMA'.
+        /// @param slowDMAType Type of Moving Average used to calculate the %D line, typically 'SMA'.
+        /// @return A vector containing <dateTime, slowK, slowD> triplets for each interval, where 'slowK' is the smoothed %K line and 'slowD' is the %D line.
+        std::vector<std::string> STOCH(std::string symbol, std::string intervalLength, int fastKPeriod = 14, int slowKPeriod = 1, int slowDPeriod = 3, std::string slowKMAType = "SMA", std::string slowDMAType = "SMA");
+
+        
+
 
 
 
