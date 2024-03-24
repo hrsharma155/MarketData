@@ -806,13 +806,188 @@ class Analytics{
         /// @param slowDMAType Type of Moving Average used to calculate the %D line, typically 'SMA'.
         /// @return A vector containing <dateTime, slowK, slowD> triplets for each interval, where 'slowK' is the smoothed %K line and 'slowD' is the %D line.
         std::vector<std::string> STOCH(std::string symbol, std::string intervalLength, int fastKPeriod = 14, int slowKPeriod = 1, int slowDPeriod = 3, std::string slowKMAType = "SMA", std::string slowDMAType = "SMA");
-
-        
-
-
-
-
-
+        /// @brief Calculates the Stochastic Fast (STOCHF) indicator, which is sensitive to price changes and often changes direction quickly.
+        ///        STOCHF compares the closing price of a security to its price range over a given time period and consists of two lines: fast_k and fast_d.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of each interval, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount Number of data points to retrieve, corresponding to the 'outputsize' in the API. It affects how many intervals of data are returned.
+        /// @param fastKPeriod Number of periods used to calculate the %K line, with a default of 14.
+        /// @param fastDPeriod Number of periods used to calculate the %D line, with a default of 3. This is a moving average of the %K line.
+        /// @param fastDMAType Type of Moving Average used on the Fast D Period, with 'SMA' as the default.
+        /// @return A vector containing <dateTime, fastK, fastD> triplets for each interval, where 'fastK' and 'fastD' represent the fast %K and %D lines, respectively.
+        std::vector<std::string> STOCHF(std::string symbol, std::string intervalLength, std::string intervalAmount, int fastKPeriod = 14, int fastDPeriod = 3, std::string fastDMAType = "SMA");
+        /// @brief Calculates the Stochastic RSI (STOCHRSI) indicator, combining the features of Stochastic Oscillator and Relative Strength Index.
+        ///        STOCHRSI is used to identify overbought and oversold conditions as well as the current market trend.
+        ///        The calculation involves applying the Stochastic formula to the RSI values instead of price data.
+        ///        The 'K' value in STOCHRSI is the current value of the Stochastic RSI, whereas the 'D' value is the moving average of the 'K' value.
+        ///        STOCHRSI = (RSI - RSI Lowest Low) / (RSI Highest High - RSI Lowest Low)
+        ///        Where RSI is calculated for a specified 'rsi_length' and STOCHRSI is calculated over 'stoch_length'.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param stochLength The number of periods used for the Stochastic calculation.
+        /// @param kPeriod The number of periods used to calculate the %K line.
+        /// @param dPeriod The number of periods used to calculate the %D line (the moving average of %K).
+        /// @param seriesType The price type on which the RSI is calculated, typically 'close'.
+        /// @param rsiLength The number of periods used to calculate the RSI.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, kValue, dValue> triplets for each interval, where 'kValue' is the current value of STOCHRSI and 'dValue' is the moving average of 'kValue'.
+        std::vector<std::string> STOCHRSI(std::string symbol, std::string intervalLength, int stochLength = 14, int kPeriod = 3, int dPeriod = 3, std::string seriesType = "close", int rsiLength = 14, std::string intervalAmount = "30");
+        /// @brief Performs arithmetic subtraction between two price series for a given symbol and interval.
+        ///        The SUB indicator subtracts the values of one time series from another, typically using different price types such as 'open' and 'close'.
+        ///        This can be used to analyze the difference between opening and closing prices or any other combination of price types.
+        ///        SUB(value1, value2) = value1 - value2 .... for each interval
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param seriesType1 The price type used as the first part of the technical indicator, typically 'open'.
+        /// @param seriesType2 The price type used as the second part of the technical indicator, typically 'close'.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, subValue> pairs for each interval, where 'subValue' is the result of the subtraction.
+        std::vector<std::string> SUB(std::string symbol, std::string intervalLength, std::string seriesType1 = "open", std::string seriesType2 = "close", std::string intervalAmount = "30");
+        /// @brief Calculates the Summation (SUM) of values for a given symbol and interval, summing up the values of a specified price type over a certain period.
+        ///        The SUM indicator provides a total sum of the specified series_type over the given time_period, helping to identify trends or patterns in data accumulation or depletion over time.
+        ///        SUM = Σ(Price) over 'time_period'
+        ///        This represents the cumulative sum of the price type specified (e.g., 'close' prices) over the number of periods specified by 'time_period'.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param seriesType The price type on which the summation is calculated, typically 'close'.
+        /// @param timePeriod The number of periods over which the summation is calculated, defaults to 9.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, sumValue> pairs for each interval, where 'sumValue' is the cumulative sum of the specified price type over the 'time_period'.
+        std::vector<std::string> SUM(std::string symbol, std::string intervalLength, std::string seriesType = "close", int timePeriod = 9, std::string intervalAmount = "30");
+        /// @brief Calculates the SuperTrend Indicator, a trend-following indicator that is used to identify the direction of the market.
+        ///        The SuperTrend Indicator combines the Average True Range (ATR) with a multiplier to determine trend direction.
+        ///        The indicator flips above or below the price depending on the trend direction, and is used to set stop-loss orders or determine entry points.
+        ///        SUPERTREND = Previous SUPERTREND value if condition is met, else Current High or Low +/- (Multiplier * ATR)
+        ///        The condition for the SUPERTREND to remain the same is based on the price being above or below the previous SUPERTREND value and the trend direction.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param multiplier The number by which the ATR is multiplied. Used to adjust the indicator sensitivity.
+        /// @param period The number of periods used to calculate the ATR, influencing the SUPERTREND sensitivity.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, supertrendValue> pairs for each interval, where 'supertrendValue' is the calculated SuperTrend value at each point in time.
+        std::vector<std::string> SUPERTREND(std::string symbol, std::string intervalLength, int multiplier = 3, int period = 10, std::string intervalAmount = "30");
+        /// @brief Calculates the SuperTrend Heikin-Ashi Candles Indicator, which combines the SuperTrend indicator with Heikin-Ashi candlestick values.
+        ///        The SuperTrend component is used to determine the trend's direction, and the Heikin-Ashi values smooth out the price data to better identify market trends.
+        ///        The SuperTrend calculation uses the Average True Range (ATR) and a multiplier to define the trend. A flip in the direction of the SuperTrend line indicates a potential reversal.
+        ///        SUPERTREND = (High + Low) / 2 ± Multiplier * ATR(Period)
+        ///        Heikin-Ashi candles are calculated using the open, high, low, and close prices, providing a synthesized view of trends.
+        ///        HEIKIN-ASHI OPEN = (Previous Open + Previous Close) / 2
+        ///        HEIKIN-ASHI CLOSE = (Open + High + Low + Close) / 4
+        ///        HEIKIN-ASHI HIGH = Max(High, Open, Close)
+        ///        HEIKIN-ASHI LOW = Min(Low, Open, Close)
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param multiplier Multiplier applied to the ATR to determine the trend threshold.
+        /// @param period Number of periods used to calculate the ATR for the SuperTrend component.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, supertrendValue, heikinOpen, heikinHigh, heikinLow, heikinClose> for each interval, where each component represents the respective value at the corresponding dateTime.
+        std::vector<std::string> SUPERTREND_HEIKINASHICANDLES(std::string symbol, std::string intervalLength, int multiplier = 3, int period = 10, std::string intervalAmount = "30");
+        /// @brief Calculates the Triple Exponential Moving Average (T3MA), an enhanced version of the TEMA indicator that offers smoother moving averages.
+        ///        T3MA provides better smoothing by extending the lookback period and incorporating a volume factor to adjust the responsiveness of the moving averages.
+        ///        The T3MA is calculated using a series of weighted EMA calculations to produce a triple smoothing of the moving average.
+        ///        T3MA = EMA3(EMA3(EMA3(Series))) where each EMA3 includes a volume factor (v_factor) to control the degree of smoothing.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod Number of periods over which the T3MA is calculated, typically 9.
+        /// @param vFactor Volume factor between 0 and 1, default 0.7, that determines the responsiveness of the moving average.
+        /// @param seriesType The price type on which the T3MA is calculated, typically 'close'.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, t3maValue> pairs for each interval, where 't3maValue' represents the T3MA at the corresponding dateTime.
+        std::vector<std::string> T3MA(std::string symbol, std::string intervalLength, int timePeriod = 9, double vFactor = 0.7, std::string seriesType = "close", std::string intervalAmount = "30");
+        /// @brief Calculates the Triple Exponential Moving Average (TEMA), which provides a smoother and more responsive moving average by applying triple exponential smoothing.
+        ///        TEMA reduces lag and enhances trend detection, making it more suitable for identifying market directions in a timely manner.
+        ///        The calculation of TEMA involves single, double, and triple exponential smoothing of the price data.
+        ///        TEMA = 3 * EMA(Price) - 3 * EMA(EMA(Price)) + EMA(EMA(EMA(Price)))
+        ///        This formula ensures that the TEMA reacts faster to price changes compared to traditional moving averages, thereby reducing the inherent lag.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod Number of periods over which the TEMA is calculated, typically 9.
+        /// @param seriesType The price type on which the TEMA is calculated, typically 'close'.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, temaValue> pairs for each interval, where 'temaValue' represents the TEMA at the corresponding dateTime.
+        std::vector<std::string> TEMA(std::string symbol, std::string intervalLength, int timePeriod = 9, std::string seriesType = "close", std::string intervalAmount = "30");
+        /// @brief Calculates the Triangular Moving Average (TRIMA), a smoother version of the simple moving average that places more weight on the middle portion of the time period.
+        ///        TRIMA is calculated by taking the average of a simple moving average over a period and the simple moving average of that average.
+        ///        This results in a weight distribution that is triangular in shape and emphasizes the central values of the time period.
+        ///        TRIMA = SUM(SUM(Price, N), N) / ((N/2) * (N+1))
+        ///        where N is the time period, and Price is typically the closing price.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod Number of periods over which the TRIMA is calculated, typically 9.
+        /// @param seriesType The price type on which the TRIMA is calculated, typically 'close'.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, trimaValue> pairs for each interval, where 'trimaValue' represents the TRIMA at the corresponding dateTime.
+        std::vector<std::string> TRIMA(std::string symbol, std::string intervalLength, int timePeriod = 9, std::string seriesType = "close", std::string intervalAmount = "30");
+        /// @brief Calculates the Time Series Forecast (TSF), which is based on linear regression of the closing prices and predicts future values.
+        ///        TSF extends the concept of a linear regression line into the future, providing a forecast based on past price data.
+        ///        The calculation involves fitting a linear regression trendline to the last N points and projecting it forward to forecast future values.
+        ///        TSF = b0 + b1 * (Time Period) where b0 is the intercept and b1 is the slope of the regression line.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod Number of periods used to calculate the TSF, typically 9.
+        /// @param seriesType The price type on which the TSF is calculated, typically 'close'.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, tsfValue> pairs for each interval, where 'tsfValue' represents the forecasted value at the corresponding dateTime based on the TSF calculation.
+        std::vector<std::string> TSF(std::string symbol, std::string intervalLength, int timePeriod = 9, std::string seriesType = "close", std::string intervalAmount = "30");
+        /// @brief Calculates the Typical Price (TYPPRICE), which is the average of the high, low, and closing prices for each period.
+        ///        The Typical Price provides a simplified view of a security's price movement and is often used as a component in other technical indicators.
+        ///        TYPPRICE = (High + Low + Close) / 3
+        ///        This simple average gives equal weight to the high, low, and closing prices, summarizing the price action of a single period into a single value.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, typpriceValue> pairs for each interval, where 'typpriceValue' represents the Typical Price at the corresponding dateTime.
+        std::vector<std::string> TYPPRICE(std::string symbol, std::string intervalLength, std::string intervalAmount = "30");
+        /// @brief Calculates the Ultimate Oscillator (ULTOSC), which incorporates three different time periods to improve the identification of overbought and oversold conditions.
+        ///        The ULTOSC combines short, intermediate, and long-term market trends in one value, aiming to reduce false signals.
+        ///        It is calculated by taking the weighted sum of three oscillators of different time periods, where each oscillator is the ratio of the true range over a given period.
+        ///        ULTOSC = (4 * ULTOSC1 + 2 * ULTOSC2 + ULTOSC3) / (4 + 2 + 1)
+        ///        where ULTOSC1, ULTOSC2, and ULTOSC3 are the oscillators for time periods 1, 2, and 3, respectively.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod1 The first time period for the ULTOSC calculation, typically 7.
+        /// @param timePeriod2 The second time period for the ULTOSC calculation, typically 14.
+        /// @param timePeriod3 The third time period for the ULTOSC calculation, typically 28.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, ultoscValue> pairs for each interval, where 'ultoscValue' represents the Ultimate Oscillator value at the corresponding dateTime.
+        std::vector<std::string> ULTOSC(std::string symbol, std::string intervalLength, int timePeriod1 = 7, int timePeriod2 = 14, int timePeriod3 = 28, std::string intervalAmount = "30");
+        /// @brief Calculates the Variance (VAR), which measures the spread between data points in a dataset to determine how far each point is from the mean.
+        ///        Variance is a statistical figure that represents the degree of spread in a dataset. A high variance indicates that the data points are spread out over a larger range of values, while a low variance indicates that the data points are closer to the mean.
+        ///        VAR = (Σ(Xi - Xmean)²) / N
+        ///        where Xi is each individual data point, Xmean is the mean of all data points, and N is the number of data points.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param timePeriod Number of periods over which the variance is calculated, typically 9.
+        /// @param seriesType The price type on which the variance is calculated, typically 'close'.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, varianceValue> pairs for each interval, where 'varianceValue' represents the variance of the data points at the corresponding dateTime.
+        std::vector<std::string> VAR(std::string symbol, std::string intervalLength, int timePeriod = 9, std::string seriesType = "close", std::string intervalAmount = "30");
+        /// @brief Calculates the Volume Weighted Average Price (VWAP), a trading benchmark that gives the average price an instrument has traded at throughout the day, based on both volume and price.
+        ///        VWAP is often used in trading and by algorithms to ensure trades are executed close to this average price to minimize market impact.
+        ///        VWAP is calculated by adding up the dollar amount traded for every transaction (price multiplied by the number of shares traded) and then dividing by the total shares traded for the day.
+        ///        VWAP = Σ(Price * Volume) / Σ(Volume)
+        ///        where Price is the price of each trade, and Volume is the size of each trade.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, VWAP value> pairs for each interval, where 'VWAP value' represents the volume weighted average price at the corresponding dateTime.
+        std::vector<std::string> VWAP(std::string symbol, std::string intervalLength, std::string intervalAmount = "30");
+        /// @brief Calculates the Weighted Close Price (WCLPRICE), which smoothens the price data by taking into account the high, low, and close prices with a double weight on the closing price.
+        ///        The formula for WCLPRICE is: (High + Low + 2 * Close) / 4. This indicator provides a more balanced view of the price movements throughout the interval, emphasizing the closing price.
+        ///        WCLPRICE provides a single price point that accounts for the volatility within the interval by balancing the high, low, and closing prices, with an emphasis on the closing price.
+        /// @param symbol Symbol for the company or asset you are inquiring about.
+        /// @param intervalLength Length of a single period, such as 1min, 5min, 15min, etc.
+        /// @param intervalAmount The number of data points to retrieve, representing the output size.
+        /// @return A vector containing <dateTime, wclPrice> pairs for each interval, where 'wclPrice' is the calculated weighted close price at the corresponding dateTime.
+        std::vector<std::string> WCLPRICE(std::string symbol, std::string intervalLength, std::string intervalAmount = "30");
+        /// @brief Calculates the Williams %R, identifying overbought and oversold levels, and potentially signaling entry and exit points.
+        ///        Williams %R oscillates between 0 and -100, where values above -20 are considered overbought and values below -80 are considered oversold.
+        ///        WILLR = (Highest High - Close) / (Highest High - Lowest Low) * -100 .... for the last 'timePeriod' intervals
+        /// @param symbol The ticker symbol for the asset.
+        /// @param interval The time interval between data points (e.g., 1min, 5min, 15min, etc.).
+        /// @param timePeriod The lookback period over which the highs and lows are considered, defaults to 9.
+        /// @return A vector of <dateTime, WILLR value> pairs, indicating the Williams %R value at each time point.
+        std::vector<std::string> WILLR(std::string symbol, std::string interval, int timePeriod = 9);
 
         
     private:
