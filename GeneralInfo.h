@@ -49,6 +49,21 @@ class GeneralInfo{
         std::string getVolumeTS();
 
 
+
+        std::string getOpenTSAt(int interval);
+        std::string getHighTSAt(int interval);
+        std::string getLowTSAt(int interval);
+        std::string getCloseTSAt(int interval);
+        std::string getVolumeTSAt(int interval);
+        std::string getTimeStampTSAt(int interval);
+
+
+
+
+
+
+
+
         //TIME SERIES --> getting info for MULTIPLE intervals requested
 
         //iterate through array and fetch timeStamp for each interval. Ordering from current time --> before current time

@@ -988,7 +988,7 @@ class Analytics{
         /// @param timePeriod The lookback period over which the highs and lows are considered, defaults to 9.
         /// @return A vector of <dateTime, WILLR value> pairs, indicating the Williams %R value at each time point.
         std::vector<std::string> WILLR(std::string symbol, std::string interval, int timePeriod = 9);
-
+        
         
     private:
         //HELPER FUNCTIONS

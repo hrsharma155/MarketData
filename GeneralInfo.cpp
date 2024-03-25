@@ -20,16 +20,12 @@ GeneralInfo::GeneralInfo() {
     valuesCC = new std::vector<std::string>();
 
 }
-
 GeneralInfo::~GeneralInfo() {
     // Free the allocated memory
     delete valuesTS; 
     delete valuesER;
     delete valuesCC;
 }
-
-
-
 //Time series functions
 void GeneralInfo::setValuesTS(std::string symbol, std::string intervalLength){
     CURL *hnd = curl_easy_init();
@@ -158,7 +154,6 @@ void GeneralInfo::setValuesTS(std::string symbol, std::string intervalLength, st
     // Cleanup JSON object
     json_object_put(parsed_json);
 }
-
 //Exchagne rate functions
 void GeneralInfo::setValuesER(std::string symbol1, std::string symbol2, std::string dateTimeString){
    CURL *hnd = curl_easy_init();
@@ -257,7 +252,6 @@ void GeneralInfo::setValuesER(std::string symbol1, std::string symbol2){
 
 
 }
-
 //Currency exchange functions
 void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, std::string amount){
     CURL *hnd = curl_easy_init();
@@ -358,7 +352,6 @@ void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, std::str
     json_object_put(parsed_json);
     fclose(fp);
 }
-
 //Time series single interval getters
 std::string GeneralInfo::getOpenTS(){
     return valuesTS->at(1);
@@ -375,9 +368,85 @@ std::string GeneralInfo::getCloseTS(){
 std::string GeneralInfo::getVolumeTS(){
     return valuesTS->at(5);
 }
+
+std::string GeneralInfo::getOpenTSAt(int interval){
+    //given interval, fetch open value at said interval
+    //validate interval first w/ valuesTS->size() / 6
+    //Use:  Open = openVal + 6(interval)
+    if(interval < 0 || interval > (valuesTS->size() / 6)){
+        return "GeneralInfo.cpp @ getOpenTSAt: interval passed is invalid. Try again";
+    }
+    std::string result;
+    int index = 1 + 6 * (interval);
+    result = valuesTS->at(index);
+    return result;
+}
+std::string GeneralInfo::getHighTSAt(int interval){
+    //given interval, fetch high value at said interval
+    //validate interval first w/ valuesTS->size() / 6
+    //Use: High = highVal + 6(interval)
+    if(interval < 0 || interval > (valuesTS->size() / 6)){
+        return "GeneralInfo.cpp @ getHighTSAt: interval passed is invalid. Try again";
+    }
+    std::string result;
+    int index = 2 + 6 * (interval);
+    result = valuesTS->at(interval);
+    return result;
+}
+std::string GeneralInfo::getLowTSAt(int interval){
+    //given interval, fetch low value at said interval
+    //validate interval first w/ valuesTS->size() / 6
+    //Use: Low = lowVal + 6(interval)
+    if(interval < 0 || interval > (valuesTS->size() / 6)){
+        return "GeneralInfo.cpp @ getLowTSAt: interval passed is invalid. Try again";
+    }
+    std::string result;
+    int index = 3 + 6 * (interval);
+    result = valuesTS->at(index);
+    return result;
+}
+std::string GeneralInfo::getCloseTSAt(int interval){
+    //given interval, fetch close value at said interval
+    //validate interval first w/ valuesTS->size() / 6
+    //Use: Close = closeVal + 6(interval)
+    if(interval < 0 || interval > (valuesTS->size() / 6)){
+        return "GeneralInfo.cpp @ getCloseTSAt: interval passed is invalid. Try again";
+    }
+    std::string result;
+    int index = 4 + 6 * (interval);
+    result = valuesTS->at(index);
+    return result;
+}
+std::string GeneralInfo::getVolumeTSAt(int interval){
+    //given interval, fetch vollume value at said interval
+    //validate interval first w/ valuesTS->size() / 6
+    //Use: Volume = volVal + 6(interval)
+    if(interval < 0 || interval > (valuesTS->size() / 6)){
+        return "GeneralInfo.cpp @ getVolumeTSAt: interval passed is invalid. Try again";
+    }
+    std::string result; 
+    int index = 5 + 6 * (interval);
+    result = valuesTS->at(index);
+    return result;
+}
+std::string GeneralInfo::getTimeStampTSAt(int interval){
+    //given interval, fetch time value at said interval
+    //validate interval first w/ valuesTS->size() / 6
+    //Use: Time = timeVal + 6(interval)
+    if(interval < 0 || interval > (valuesTS->size() / 6)){
+        return "GeneralInfo.cpp @ getTimeStampTSAt: interval passed is invalid. Try again";
+    }
+    std::string result; 
+    int index = 0 + 6 * (interval);
+    result = valuesTS->at(index);
+    return result;
+}
+
+
+
 //Time series all intervals getters
 std::vector<std::string> GeneralInfo::getAllTimeStampTS(){
-    //vector to return holding all the high values
+    //vector to return holding all the time values
     std::vector<std::string> temp;
 
     int intervalAm = (valuesTS->size() / 6);
@@ -466,7 +535,6 @@ std::vector<std::string> GeneralInfo::getAllVolumeTS(){
 
     return temp;
 }
-
 //Exchange rate getters
 std::string GeneralInfo::getStockExchangeRateER(){
     return valuesER->at(1);
@@ -474,7 +542,6 @@ std::string GeneralInfo::getStockExchangeRateER(){
 std::string GeneralInfo::getTimeStampER(){
     return valuesER->at(2);
 }
-
 //Currency conversion getters
 std::string GeneralInfo::getCurrencyExchangeRateCC(){
     return valuesCC->at(1);
@@ -485,10 +552,8 @@ std::string GeneralInfo::getCurrencyExchangeAmountCC(){
 std::string GeneralInfo::getTimeStampCC(){
     return valuesCC->at(3);
 }
-
 //Real time price getter
 double GeneralInfo::getRealTimePriceRTP(std::string symbol){}
-
 //HELPER FUNCTIONS
 std::string GeneralInfo::ConvertFromUnixTime(std::string unixTime){
     std::time_t result = std::stol(unixTime);
