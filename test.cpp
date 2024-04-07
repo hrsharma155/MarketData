@@ -4,123 +4,91 @@
 #include <json-c/json.h>
 #include "Parse.h"
 #include "GeneralInfo.h"
+#include "Analytics.h"
 
+double average (std::vector<double> pass){
+    int sum = 0;
+    for(double value : pass){
+        sum += value;
+    }
+    return sum / pass.size();
+}
 
 int main() {
+   
 
     // TIME SERIES TESTS
 
-    // setValuesTS(3 paramaters)
     // GeneralInfo dataReport;
     // dataReport.setValuesTS("AAPL", "5min", "3");
     // int i= 1;
     // int j = 1;
 
-    // for(int k =0; k < dataReport.valuesTS->size(); k++){
-    //     std::cout << dataReport.valuesTS->at(k) << ' ';
-    //     std::cout << "\n";
-    //     if(i == (6*j)){
-    //         std::cout << "\n";
-    //         j++;
-    //     }
-    //     i++;
-
+    // for (const auto& stockValue : *(dataReport.valuesTS)) {
+    //     std::cout << "Datetime: " << stockValue.dateTime
+    //               << ", Open: " << stockValue.open
+    //               << ", High: " << stockValue.high
+    //               << ", Low: " << stockValue.low
+    //               << ", Close: " << stockValue.close
+    //               << ", Volume: " << stockValue.volume
+    //               << std::endl;
     // }
+    // Analytics a;
+    // // a.setValuesTS("AAPL", "5min", "3");
+    // // std::cout << "Money Flow Multiplier: " << a.MoneyFlowMultiplier(0) << "\n";
+    // // std::cout << "Money Flow Volume: " << a.MoneyFlowVolume(0) << " \n" ;
 
 
-    // std::cout << "\n";
-    // std::cout << "\n";
-    // std::cout << "\n";
-    // dataReport.getAllTimeStampTS();
-    // std::cout << "\n";
-    // std::cout << "\n";
-    // dataReport.getAllHighTS();
-    // std::cout << "\n";
-    // std::cout << "\n";
-    // dataReport.getAllLowTS();
-    // std::cout << "\n";
-    // std::cout << "\n";
-    // dataReport.getAllOpenTS();
-    // std::cout << "\n";
-    // std::cout << "\n";
-    // dataReport.getAllCloseTS();
-    // std::cout << "\n";
-    // std::cout << "\n";
-    // std::vector<std::string> temp1 = dataReport.getAllVolumeTS();
-    // for(int j = 0; j<temp1.size(); j++){
-    //     std::cout << temp1.at(j);
-    //     std::cout << "\n";
+    // std::vector<std::pair<std::string, double>> result;
+    // result = a.ChaikinAD("AAPL", "5min", 10);
+    // std::cout << "Money Flow Multiplier: " << a.MoneyFlowMultiplier(0) << "\n";
+    // std::cout << "Money Flow Volume: " << a.MoneyFlowVolume(9) << " \n" ;
+
+    // for (const auto &entry : result) {
+    //     std::cout << "Date: " << entry.first << ", ChaikinAD: " << entry.second << '\n';
     // }
+    Analytics a;
+    std::vector<double> pass = {0,1,12,23,24,54,6,7,8,9};
+    int periods = 2; //added periods - 1 intervals
 
-    // std::cout << "\n";
+    std::vector<double> result = a.ExponentialMovingAverage(pass, periods);
+    std::vector<double> avg = {0,1,2,3,4};
 
-    //dataReport.~GeneralInfo(); // free allocated memory
+    
+    for (double value : result){
+        std::cout << value << "\n";
+    }
 
-
-
-
-
-
-
-
-
-
-
+    std::cout << "average of list passed:" << average(avg);
 
 
-    //EXCHANGE RATE TESTS
-
-    //setvaluesER(2 paramaters)
-
-    // GeneralInfo dataReport;
-    // std::string symb1 = "CAD";
-    // std::string symb2 = "USD";
-    // dataReport.setValuesER(symb1, symb2);
-    // int i= 1;
-    // int j = 1;
-    // for(int k =0; k < dataReport.valuesER->size(); k++){
-    //     std::cout << dataReport.valuesER->at(k) << ' ';
-    //     std::cout << "\n";
-    //     if(i == (6*j)){
-    //         std::cout << "\n";
-    //         j++;
-    //     }
-    //     i++;
-
-    // }
-    // std::cout << "\n";
-
-
-
-
-
-
-    //Currency Conversion tests
-    //setvaluesCC(4 paramaters)
-
-    // GeneralInfo dataReport;
-    // std::string symb1 = "CAD";
-    // std::string symb2 = "USD";
-    // std::string amount = "400";
-    // std::string dateTimeString = "1995-01-02";
-    // dataReport.setValuesCC(symb1, symb2, amount);
-    // int i= 1;
-    // int j = 1;
-
-
-    //  for(int k =0; k < dataReport.valuesCC->size(); k++){
-    //     std::cout << dataReport.valuesCC->at(k) << ' ';
-    //     std::cout << "\n";
-    //     if(i == (6*j)){
-    //         std::cout << "\n";
-    //         j++;
-    //     }
-    //     i++;
-
-    // }
     
 
-    // std::cout << "\n";
+
+   
+    
+
+
+
+
+
+
+
+
+    // Analytics a;
+    // std::vector<std::pair<std::string, double>> resultV;
+    // //double result = a.MoneyFlowMultiplier(1);
+    // //std::cout << a.MoneyFlowMultiplier(1) << "\n";
+    // resultV = a.ChaikinAD("AAPL", "5min", 3);
+    // std::cout << a.valuesTS->size() << "\n";
+
+
+
+
+
+
+
+
 
 
 

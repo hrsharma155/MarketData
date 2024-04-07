@@ -9,16 +9,20 @@
 #include <stdexcept>
 #include <ctime>
 #include <json-c/json.h>
-
+//date 0
+//open 1
+//close 4
+//high 2
+//low 3
+//vol 5
 
 
 //MAKE THE VECTORS POINTERS 
 GeneralInfo::GeneralInfo() {
     // Allocate memory for the vectors on the heap
-    valuesTS = new std::vector<std::string>(); 
-    valuesER = new std::vector<std::string>();
-    valuesCC = new std::vector<std::string>();
-
+    valuesTS = new std::vector<StockValues>(); 
+    valuesER = new std::vector<ExchangeRateValues>();
+    valuesCC = new std::vector<CurrencyConversionValues>();
 }
 GeneralInfo::~GeneralInfo() {
     // Free the allocated memory
@@ -77,21 +81,25 @@ void GeneralInfo::setValuesTS(std::string symbol, std::string intervalLength){
             json_object_object_get_ex(value, "close", &close);
             json_object_object_get_ex(value, "volume", &volume);
 
-            GeneralInfo();
+            
+            StockValues stockValue;
+            stockValue.dateTime = json_object_get_string(datetime);
+            stockValue.open = json_object_get_string(open);
+            stockValue.high = json_object_get_string(high);
+            stockValue.low = json_object_get_string(low);
+            stockValue.close = json_object_get_string(close);
+            stockValue.volume = json_object_get_string(volume);
 
-            // Push back the values into the vector in the specified order
-            valuesTS->push_back(json_object_get_string(datetime));
-            valuesTS->push_back(json_object_get_string(open));
-            valuesTS->push_back(json_object_get_string(high));
-            valuesTS->push_back(json_object_get_string(low));
-            valuesTS->push_back(json_object_get_string(close));
-            valuesTS->push_back(json_object_get_string(volume));
+            valuesTS->push_back(stockValue);
+         
         }
 
         // Cleanup JSON object
         json_object_put(parsed_json);
 
 }
+
+
 void GeneralInfo::setValuesTS(std::string symbol, std::string intervalLength, std::string intervalAmount){
    CURL *hnd = curl_easy_init();
 
@@ -142,18 +150,20 @@ void GeneralInfo::setValuesTS(std::string symbol, std::string intervalLength, st
         json_object_object_get_ex(value, "close", &close);
         json_object_object_get_ex(value, "volume", &volume);
 
-        GeneralInfo();
-        // Push back the values into the vector in the specified order
-        valuesTS->push_back(json_object_get_string(datetime));
-        valuesTS->push_back(json_object_get_string(open));
-        valuesTS->push_back(json_object_get_string(high));
-        valuesTS->push_back(json_object_get_string(low));
-        valuesTS->push_back(json_object_get_string(close));
-        valuesTS->push_back(json_object_get_string(volume));
+        StockValues stockValue;
+        stockValue.dateTime = json_object_get_string(datetime);
+        stockValue.open = json_object_get_string(open);
+        stockValue.high = json_object_get_string(high);
+        stockValue.low = json_object_get_string(low);
+        stockValue.close = json_object_get_string(close);
+        stockValue.volume = json_object_get_string(volume);
+
+        valuesTS->push_back(stockValue);
     }
     // Cleanup JSON object
     json_object_put(parsed_json);
 }
+
 //Exchagne rate functions
 void GeneralInfo::setValuesER(std::string symbol1, std::string symbol2, std::string dateTimeString){
    CURL *hnd = curl_easy_init();
@@ -179,7 +189,7 @@ void GeneralInfo::setValuesER(std::string symbol1, std::string symbol2, std::str
   // Assuming 'readBuffer' contains the JSON data as a string
     struct json_object *parsed_json = json_object_from_file("response.json"); //ADD EXCEPTION FOR IF NOT PARSED
     if (!fp) {
-            throw std::runtime_error("Failed to open response.json for parsing");
+        throw std::runtime_error("Failed to open response.json for parsing");
     }
 
     struct json_object *symbol, *rate, *timestamp;
@@ -191,11 +201,15 @@ void GeneralInfo::setValuesER(std::string symbol1, std::string symbol2, std::str
     std::string timestampStr = std::to_string(json_object_get_int64(timestamp));
     std::string formattedTime = ConvertFromUnixTime(timestampStr);
    
-    GeneralInfo();
+    ExchangeRateValues erVal;
 
-    valuesER->push_back(json_object_get_string(symbol));
-    valuesER->push_back(json_object_get_string(rate));
-    valuesER->push_back(formattedTime);
+    erVal.symbol = json_object_get_string(symbol);
+    erVal.rate = json_object_get_string(rate);
+    erVal.dateTime = formattedTime;
+
+    valuesER->push_back(erVal);
+    
+  
 
     // Cleanup JSON object
     json_object_put(parsed_json);
@@ -238,11 +252,13 @@ void GeneralInfo::setValuesER(std::string symbol1, std::string symbol2){
     std::string timestampStr = std::to_string(json_object_get_int64(timestamp));
     std::string formattedTime = ConvertFromUnixTime(timestampStr);
 
-    GeneralInfo();
-   
-    valuesER->push_back(json_object_get_string(symbol));
-    valuesER->push_back(json_object_get_string(rate));
-    valuesER->push_back(formattedTime);
+    ExchangeRateValues erVal;
+
+    erVal.symbol = json_object_get_string(symbol);
+    erVal.rate = json_object_get_string(rate);
+    erVal.dateTime = formattedTime;
+
+    valuesER->push_back(erVal);
 
     // Cleanup JSON object
     json_object_put(parsed_json);
@@ -291,12 +307,14 @@ void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, std::str
     std::string formattedTime = ConvertFromUnixTime(timestampStr);
    
 
-    GeneralInfo();
+    CurrencyConversionValues ccValue;
 
-    valuesCC->push_back(json_object_get_string(symbol));
-    valuesCC->push_back(json_object_get_string(rate));
-    valuesCC->push_back(json_object_get_string(amount1));
-    valuesCC->push_back(formattedTime);
+    ccValue.symbol = json_object_get_string(symbol);
+    ccValue.rate = json_object_get_string(rate);
+    ccValue.amount = json_object_get_string(amount1);
+    ccValue.dateTime = formattedTime;
+
+    valuesCC->push_back(ccValue);
 
     // Cleanup JSON object
     json_object_put(parsed_json);
@@ -326,7 +344,7 @@ void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, std::str
     FILE *fp = fopen("response.json", "r");
 
 
-  // Assuming 'readBuffer' contains the JSON data as a string
+    // Assuming 'readBuffer' contains the JSON data as a string
     struct json_object *parsed_json = json_object_from_file("response.json"); //ADD EXCEPTION FOR IF NOT PARSED
     if (!fp) {
             throw std::runtime_error("Failed to open response.json for parsing");
@@ -342,218 +360,154 @@ void GeneralInfo::setValuesCC(std::string symbol1, std::string symbol2, std::str
     std::string timestampStr = std::to_string(json_object_get_int64(timestamp));
     std::string formattedTime = ConvertFromUnixTime(timestampStr);
     
-    GeneralInfo();
-    valuesCC->push_back(json_object_get_string(symbol));
-    valuesCC->push_back(json_object_get_string(rate));
-    valuesCC->push_back(json_object_get_string(amount1));
-    valuesCC->push_back(formattedTime);
+   CurrencyConversionValues ccValue;
+
+    ccValue.symbol = json_object_get_string(symbol);
+    ccValue.rate = json_object_get_string(rate);
+    ccValue.amount = json_object_get_string(amount1);
+    ccValue.dateTime = formattedTime;
+
+    valuesCC->push_back(ccValue);
 
     // Cleanup JSON object
     json_object_put(parsed_json);
     fclose(fp);
 }
-//Time series single interval getters
-std::string GeneralInfo::getOpenTS(){
-    return valuesTS->at(1);
-}
-std::string GeneralInfo::getHighTS(){
-    return valuesTS->at(2);
-}
-std::string GeneralInfo::getLowTS(){
-    return valuesTS->at(3);
-}
-std::string GeneralInfo::getCloseTS(){
-    return valuesTS->at(4);
-}
-std::string GeneralInfo::getVolumeTS(){
-    return valuesTS->at(5);
-}
+
 
 std::string GeneralInfo::getOpenTSAt(int interval){
     //given interval, fetch open value at said interval
     //validate interval first w/ valuesTS->size() / 6
-    //Use:  Open = openVal + 6(interval)
-    if(interval < 0 || interval > (valuesTS->size() / 6)){
+    if(interval < 0 || interval >= valuesTS->size()){
         return "GeneralInfo.cpp @ getOpenTSAt: interval passed is invalid. Try again";
     }
-    std::string result;
-    int index = 1 + 6 * (interval);
-    result = valuesTS->at(index);
-    return result;
+    std::string openValue = valuesTS->at(interval).open;
+    return openValue;
 }
 std::string GeneralInfo::getHighTSAt(int interval){
     //given interval, fetch high value at said interval
     //validate interval first w/ valuesTS->size() / 6
-    //Use: High = highVal + 6(interval)
-    if(interval < 0 || interval > (valuesTS->size() / 6)){
+    if(interval < 0 || interval >= valuesTS->size()){
         return "GeneralInfo.cpp @ getHighTSAt: interval passed is invalid. Try again";
     }
-    std::string result;
-    int index = 2 + 6 * (interval);
-    result = valuesTS->at(interval);
-    return result;
+    std::string highValue = valuesTS->at(interval).high;
+    return highValue;
 }
 std::string GeneralInfo::getLowTSAt(int interval){
     //given interval, fetch low value at said interval
     //validate interval first w/ valuesTS->size() / 6
-    //Use: Low = lowVal + 6(interval)
-    if(interval < 0 || interval > (valuesTS->size() / 6)){
+    if(interval < 0 || interval >= valuesTS->size()){
         return "GeneralInfo.cpp @ getLowTSAt: interval passed is invalid. Try again";
     }
-    std::string result;
-    int index = 3 + 6 * (interval);
-    result = valuesTS->at(index);
-    return result;
+    std::string lowValue = valuesTS->at(interval).low;
+    return lowValue;
 }
 std::string GeneralInfo::getCloseTSAt(int interval){
     //given interval, fetch close value at said interval
     //validate interval first w/ valuesTS->size() / 6
-    //Use: Close = closeVal + 6(interval)
-    if(interval < 0 || interval > (valuesTS->size() / 6)){
+    if(interval < 0 || interval >= valuesTS->size()){
         return "GeneralInfo.cpp @ getCloseTSAt: interval passed is invalid. Try again";
     }
-    std::string result;
-    int index = 4 + 6 * (interval);
-    result = valuesTS->at(index);
-    return result;
+    std::string closeValue = valuesTS->at(interval).close;
+    return closeValue;
 }
 std::string GeneralInfo::getVolumeTSAt(int interval){
     //given interval, fetch vollume value at said interval
     //validate interval first w/ valuesTS->size() / 6
     //Use: Volume = volVal + 6(interval)
-    if(interval < 0 || interval > (valuesTS->size() / 6)){
+    if(interval < 0 || interval >= valuesTS->size()){
         return "GeneralInfo.cpp @ getVolumeTSAt: interval passed is invalid. Try again";
     }
-    std::string result; 
-    int index = 5 + 6 * (interval);
-    result = valuesTS->at(index);
-    return result;
+    std::string volumeValue = valuesTS->at(interval).volume; 
+    return volumeValue;
 }
 std::string GeneralInfo::getTimeStampTSAt(int interval){
     //given interval, fetch time value at said interval
     //validate interval first w/ valuesTS->size() / 6
     //Use: Time = timeVal + 6(interval)
-    if(interval < 0 || interval > (valuesTS->size() / 6)){
+    if(interval < 0 || interval >= valuesTS->size()){
         return "GeneralInfo.cpp @ getTimeStampTSAt: interval passed is invalid. Try again";
     }
-    std::string result; 
-    int index = 0 + 6 * (interval);
-    result = valuesTS->at(index);
-    return result;
+    std::string dateValue = valuesTS->at(interval).dateTime; 
+    return dateValue;
 }
 
 
 
 //Time series all intervals getters
 std::vector<std::string> GeneralInfo::getAllTimeStampTS(){
-    //vector to return holding all the time values
+    //vector to return holding all values of type specified
     std::vector<std::string> temp;
-
-    int intervalAm = (valuesTS->size() / 6);
-    int index = 0;
-    //use equation: val + 6(interval).... for timestamp, val = 0
-    for(int i = 0; i < intervalAm; i++){
-        index = 0 + 6*(i);
-        temp.push_back(valuesTS->at(index));
+    for (const auto& stockValue : *valuesTS) {
+        // Push the value string into the temp vector
+        temp.push_back(stockValue.dateTime);
     }
-
     return temp;
-
 }
 std::vector<std::string> GeneralInfo::getAllHighTS(){
-    //vector to return holding all the high values
+    //vector to return holding all values of type specified
     std::vector<std::string> temp;
-
-    int intervalAm = (valuesTS->size() / 6);
-    int index = 0;
-    //use equation: val + 6(interval).... for high, val = 2
-    for(int i = 0; i < intervalAm; i++){
-        index = 2 + 6*(i);
-        temp.push_back(valuesTS->at(index));
+    for (const auto& stockValue : *valuesTS) {
+        // Push the value string into the temp vector
+        temp.push_back(stockValue.high);
     }
-
     return temp;
-
 }
 std::vector<std::string> GeneralInfo::getAllLowTS(){
-    //vector to return holding all the high values
+    //vector to return holding all values of type specified
     std::vector<std::string> temp;
-
-    int intervalAm = (valuesTS->size() / 6);
-    int index = 0;
-    //use equation: val + 6(interval).... for low, val = 3
-    for(int i = 0; i < intervalAm; i++){
-        index = 3 + 6*(i);
-        temp.push_back(valuesTS->at(index));
+    for (const auto& stockValue : *valuesTS) {
+        // Push the value string into the temp vector
+        temp.push_back(stockValue.low);
     }
-
     return temp;
-
 }
 std::vector<std::string> GeneralInfo::getAllOpenTS(){
-    //vector to return holding all the high values
+    //vector to return holding all values of type specified
     std::vector<std::string> temp;
-
-    int intervalAm = (valuesTS->size() / 6);
-    int index = 0;
-    //use equation: val + 6(interval).... for open, val = 1
-    for(int i = 0; i < intervalAm; i++){
-        index = 1 + 6*(i);
-        temp.push_back(valuesTS->at(index));
+    for (const auto& stockValue : *valuesTS) {
+        // Push the value string into the temp vector
+        temp.push_back(stockValue.open);
     }
-
     return temp;
-
 }
 std::vector<std::string> GeneralInfo::getAllCloseTS(){
-
-    //vector to return holding all the high values
+    //vector to return holding all values of type specified
     std::vector<std::string> temp;
-
-    int intervalAm = (valuesTS->size() / 6);
-    int index = 0;
-    //use equation: val + 6(interval).... for close, val = 4
-    for(int i = 0; i < intervalAm; i++){
-        index = 4 + 6*(i);
-        temp.push_back(valuesTS->at(index));
+    for (const auto& stockValue : *valuesTS) {
+        // Push the value string into the temp vector
+        temp.push_back(stockValue.close);
     }
-
     return temp;
 }
 std::vector<std::string> GeneralInfo::getAllVolumeTS(){
-
-    //vector to return holding all the high values
+    //vector to return holding all values of type specified
     std::vector<std::string> temp;
-
-    int intervalAm = (valuesTS->size() / 6);
-    int index = 0;
-    //use equation: val + 6(interval).... for volume, val = 5
-    for(int i = 0; i < intervalAm; i++){
-        index = 5 + 6*(i);
-        temp.push_back(valuesTS->at(index));
+    for (const auto& stockValue : *valuesTS) {
+        // Push the value string into the temp vector
+        temp.push_back(stockValue.volume);
     }
-
     return temp;
 }
 //Exchange rate getters
 std::string GeneralInfo::getStockExchangeRateER(){
-    return valuesER->at(1);
+    return valuesER->at(0).rate;
 }
 std::string GeneralInfo::getTimeStampER(){
-    return valuesER->at(2);
+    return valuesER->at(0).dateTime;
 }
 //Currency conversion getters
 std::string GeneralInfo::getCurrencyExchangeRateCC(){
-    return valuesCC->at(1);
+    return valuesCC->at(0).rate;
 }
 std::string GeneralInfo::getCurrencyExchangeAmountCC(){
-    return valuesCC->at(2);
+    return valuesCC->at(0).amount;
 }
 std::string GeneralInfo::getTimeStampCC(){
-    return valuesCC->at(3);
+    return valuesCC->at(0).dateTime;
 }
 //Real time price getter
-double GeneralInfo::getRealTimePriceRTP(std::string symbol){}
+double GeneralInfo::getRealTimePriceRTP(std::string symbol){return 0;}
 //HELPER FUNCTIONS
 std::string GeneralInfo::ConvertFromUnixTime(std::string unixTime){
     std::time_t result = std::stol(unixTime);
@@ -565,5 +519,5 @@ std::string GeneralInfo::ConvertFromUnixTime(std::string unixTime){
     return std::string(buffer);
 
 }
-bool GeneralInfo::ValidateDateTime(const std::string& dateTimeString){}
+bool GeneralInfo::ValidateDateTime(const std::string& dateTimeString){return false;}
 #endif 

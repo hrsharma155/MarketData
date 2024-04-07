@@ -4,10 +4,9 @@
 #include <vector>
 #include <array>
 #include <string>
+#include <utility>
 
-
-
-class Analytics{
+class Analytics : public GeneralInfo{
     public:
         /// @brief Calculates the Chaikin A/D line distribution to determine advance or decline of an asset
         ///        =(  ((close-low)-(high-close)) / (high-low)   ) x Volume
@@ -15,7 +14,7 @@ class Analytics{
         /// @param intervalLength length of a single period, 1min,5min,15min....etc 
         /// @param intervalAmount how many periods.. will only stick to 10.
         /// @return a vector consisting of <dateTime,valAD,dateTime,valAD.... etc
-        std::vector<std::string> ChaikinAD(std::string symbol, std::string intervalLength, std::string intervalAmount);
+        std::vector<std::pair<std::string, double>> ChaikinAD(std::string symbol, std::string intervalLength, int intervalAmount);
         /// @brief Calculates the Chaikin A/D Oscillator. Finds the relationship between increasing and decreasing volume with
         ///        price fluctuations. Measures momentum of ADL line using EMAs of varying length.
         /// @param symbol Company symbol name
@@ -24,7 +23,7 @@ class Analytics{
         /// @param shortEMA Lower bound exponential moving average 
         /// @param longEMA  Upper bound exponential moving average 
         /// @return vector containing the dateTime and respective ADOSC value for all intervals given in the form <date,ADOSC...date,ADOSC...etc>
-        std::vector<std::string> ADOSC(std::string symbol, std::string intervalLength, std::string intervalAmount, std::string shortEMA, std::string longEMA);
+        std::vector<std::pair<std::string, double>> ADOSC(std::string symbol, std::string intervalLength, int intervalAmount, int shortEMA, int longEMA);
         /// @brief Calculate the Average Directional Index(ADX). Quantifies strength of a trend in a price series, regardless of direction. Default intervalAmount to 14.
         ///        ADX = EMA(DX, 14)
         /// @param symbol Company symbol for query
@@ -596,7 +595,7 @@ class Analytics{
         /// @param timePeriod The number of periods over which the midpoint is calculated, typically 9.
         /// @param dataType close, high, open, low ???
         /// @return A vector containing <dateTime, midpoint value> pairs for each interval.
-        std::vector<std::string> MIDPOINT(std::string symbol, std::string intervalLength, int timePeriod = 9, std::string dataType);
+        std::vector<std::string> MIDPOINT(std::string symbol, std::string intervalLength, int timePeriod = 9, std::string dataType = "close");
         /// @brief MidPoint Price over period (MIDPRICE) calculates the midpoint of the highest high and lowest low over a specified period.
         ///        MIDPRICE = (Highest High + Lowest Low) / 2
         /// @param symbol Symbol for the company or asset you are inquiring about.
@@ -604,7 +603,7 @@ class Analytics{
         /// @param timePeriod The number of periods over which the MIDPRICE is calculated, typically 9.
         /// @param intervalAmount amount of intervals
         /// @return A vector containing <dateTime, MIDPRICE value> pairs for each interval.
-        std::vector<std::string> MIDPRICE(std::string symbol, std::string intervalLength, int timePeriod = 9, std::string intervalAmount);
+        std::vector<std::string> MIDPRICE(std::string symbol, std::string intervalLength, int timePeriod = 9, std::string intervalAmount = "10");
         /// @brief Calculates the lowest value over a specified period for a given symbol and interval.
         ///        MIN is calculated as the minimum value within the specified time period based on the series type.
         /// @param symbol Symbol for the company or asset you are inquiring about.
@@ -708,7 +707,7 @@ class Analytics{
         /// @param seriesType The price type on which the technical indicator is calculated, defaulting to "close".
         /// @param intervalAmount The number of data points to calculate the PPO over.
         /// @return A vector of pairs, each containing a datetime and the corresponding PPO value for that time.
-        std::vector<std::pair<std::string, double>> PPO(std::string symbol, std::string intervalLength, int fastPeriod = 12, int slowPeriod = 26, std::string maType = "SMA", std::string seriesType = "close", int intervalAmount);
+        std::vector<std::pair<std::string, double>> PPO(std::string symbol, std::string intervalLength, int fastPeriod = 12, int slowPeriod = 26, std::string maType = "SMA", std::string seriesType = "close", int intervalAmount = 0);
         /// @brief Calculates the Rate of Change (ROC) which measures the percentage change in price between the current price and the price a certain number of periods ago.
         ///     ROC = ((Current Price / Price 'n' Periods Ago) - 1) * 100
         /// @param symbol The ticker symbol for the financial instrument.
@@ -729,14 +728,14 @@ class Analytics{
         /// @param intervalLength The time period between each data point (e.g., 1min, 5min, 15min, etc.).
         /// @param intervalAmount The number of data points to calculate the ROCR over, defaults to 9.
         /// @return A vector of pairs, each containing a datetime and the corresponding ROCR value for that time.
-        std::vector<std::pair<std::string, double>> ROCR(std::string symbol, std::string intervalLength, int intervalAmount = 9, std::string dataType);
+        std::vector<std::pair<std::string, double>> ROCR(std::string symbol, std::string intervalLength, int intervalAmount = 9, std::string dataType = "close");
         /// @brief Calculates the Rate of Change Ratio 100 scale (ROCR100) which measures the ratio of the current price to the price a certain number of periods ago, scaled by 100.
         ///      ROCR100 = (Current Price / Price 'n' Periods Ago) * 100
         /// @param symbol The ticker symbol for the financial instrument.
         /// @param intervalLength The time period between each data point (e.g., 1min, 5min, 15min, etc.).
         /// @param intervalAmount The number of data points to calculate the ROCR100 over, defaults to 9.
         /// @return A vector of pairs, each containing a datetime and the corresponding ROCR100 value for that time.
-        std::vector<std::pair<std::string, double>> ROCR100(std::string symbol, std::string intervalLength, int intervalAmount = 9, std::string dataType);
+        std::vector<std::pair<std::string, double>> ROCR100(std::string symbol, std::string intervalLength, int intervalAmount = 9, std::string dataType = "close");
         /// @brief Calculates the Relative Strength Index (RSI), a momentum indicator that measures the magnitude of recent price changes to evaluate overbought or oversold conditions.
         ///        RSI = 100 - (100 / (1 + (average gain / average loss)))
         /// @param symbol Symbol for the company or asset you are inquiring about.
@@ -990,41 +989,41 @@ class Analytics{
         std::vector<std::string> WILLR(std::string symbol, std::string interval, int timePeriod = 9);
         
         
-    private:
+    //private:
         //HELPER FUNCTIONS
         
         /// @brief Calculates the Accumulation/Distribution Line (ADL) for an Interval
         ///        Formula for ADL = previousADL + Current Money Flow Volume (MFV)
         /// @param previousADL ADL for previous period. If no previous period, set to 0.
         /// @param moneyFlowVolume Current moneyFlowVolume via the MoneyFlowVolume function 
-        /// @param periodCounter in the event of recursion, use for base case.
         /// @return ADL value for said interval
-        double AccumDistrLine(double previousADL, double moneyFlowVolume, int periodCounter);
+        double AccumDistrLine(double previousADL, double moneyFlowVolume);
         /// @brief Calculate the money flow multiplier for the current interval. 
         ///        MFM = ((close-low)-(high-close)) / (high-low)
         /// @param close clsoe price of the interval
         /// @param high  highest price of the interval
         /// @param low   lowest price of the interval
         /// @return 'double' value of the money flow multiplier for the current interval.
-        double MoneyFlowMultiplier(double close, double high, double low); 
+        double MoneyFlowMultiplier(int interval); 
         /// @brief Calculate the money flow volume value for an interval
         ///        MFV = Money Flow Multiplier (MFM) * Volume
         /// @param moneyFlowMultiplier money flow multiplier for the given interval
         /// @param volume volume of the given interval
         /// @return return the money flow volume value for the given interval
-        double MoneyFlowVolume(double moneyFlowMultiplier, double volume);
+        double MoneyFlowVolume(int interval);
 
 
         /// @brief Calculate EMA of a given period. EMA(today) = (Value(today) * Alpha) + (EMA(yesterday) * (1-Alpha))
-        ///        Alpha = 2 / (N+1) .... where N is the timePeriod
+        ///        K = 2 / (N+1) .... where N is the timePeriod
         ///        Value(today) = value of the current period.        ex. (if calculating EMA of period 2, then use value of period 2). doesnt have to be confined to value, can get EMA of DX, DI...etc of anything really
         ///        EMA(yesterday) = EMA of previous period.
+        ///        EMAtoday = (Valuetoday * K) + (EMAyesterday * (1 - K))
         /// @param timePeriod Refers to the amount of intervals to calculate up to. Constraint on variable is dependent on how many periods present in 'valuesTS'
         /// @param value data attribute you want to measure the moving average of.
         /// @return return EMA calculated up to the specified period #
-        double ExponentialMovingAverage(double value, int timePeriod);
-        double WeightedMovingAverage(double value, int timePeriod);
-        double SimpleMovingAverage(double value, int timePeriod);
+        std::vector<double> ExponentialMovingAverage(std::vector<double> values, int timePeriod);
+        std::vector<double> WeightedMovingAverage(std::vector<double> values, int timePeriod);
+        std::vector<double> SimpleMovingAverage(std::vector<double> values, int timePeriod);
 
 
 

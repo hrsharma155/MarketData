@@ -11,11 +11,34 @@
 //public var for keeping track of # of intervals in the TS vector?
 
 class GeneralInfo{
-    
     public:
-        std::vector<std::string> *valuesTS;
-        std::vector<std::string> *valuesER;
-        std::vector<std::string> *valuesCC;
+
+        struct StockValues{
+            std::string dateTime;
+            std::string open;
+            std::string high;
+            std::string low;
+            std::string close;
+            std::string volume;
+        };
+
+        struct ExchangeRateValues{
+            std::string symbol;
+            std::string rate;
+            std::string dateTime;
+
+        };
+        struct CurrencyConversionValues{
+            std::string symbol;
+            std::string rate;
+            std::string amount;
+            std::string dateTime;
+        };
+
+
+        std::vector<StockValues> *valuesTS;
+        std::vector<ExchangeRateValues> *valuesER;
+        std::vector<CurrencyConversionValues> *valuesCC;
 
 
         //Constructor: allocate memory on the heap.
