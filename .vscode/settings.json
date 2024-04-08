@@ -45,6 +45,10 @@
         "string_view": "cpp",
         "cinttypes": "cpp",
         "ctime": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "bit": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "numbers": "cpp"
     }
 }

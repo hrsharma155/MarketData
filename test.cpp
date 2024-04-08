@@ -51,15 +51,14 @@ int main() {
     std::vector<double> pass = {0,1,12,23,24,54,6,7,8,9};
     int periods = 2; //added periods - 1 intervals
 
-    std::vector<double> result = a.ExponentialMovingAverage(pass, periods);
-    std::vector<double> avg = {0,1,2,3,4};
+    std::vector<std::pair<std::string, double>> result = a.ADOSC("AAPL","5min", 10, 2, 5);
 
     
-    for (double value : result){
-        std::cout << value << "\n";
+    for (auto value : result){
+        std::cout << value.first << "    " << value.second << "\n";
     }
 
-    std::cout << "average of list passed:" << average(avg);
+    //std::cout << "average of list passed:" << average(avg);
 
 
     

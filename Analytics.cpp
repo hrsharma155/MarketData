@@ -8,7 +8,7 @@
 //SMA & EMA... for intervalAmount paramater, call for intervalAmount = values.size() + (periods - 1)
 
 
-std::vector<std::pair<std::string, double>> Analytics::ChaikinAD(std::string symbol, std::string intervalLength, int intervalAmount){
+std::vector<std::pair<std::string, double>> Analytics::ChaikinAD(std::string symbol, std::string intervalLength, int intervalAmount){ 
     //populate global data structure
     setValuesTS(symbol, intervalLength, std::to_string(intervalAmount));
     if(intervalAmount < 0 || intervalAmount > valuesTS->size()){
@@ -25,6 +25,7 @@ std::vector<std::pair<std::string, double>> Analytics::ChaikinAD(std::string sym
         chaikinVal = chaikinVal + currentMFV;
         //get timestamp for the current interval and chaikinVal and push into data struct
         result.push_back({getTimeStampTSAt(i), chaikinVal});
+        
     }
     //return vector ordered from oldest to newest interval. 
     //Reverse to preserve original ordering: newest to oldest
@@ -32,21 +33,35 @@ std::vector<std::pair<std::string, double>> Analytics::ChaikinAD(std::string sym
     return result;
 }
 
-std::vector<std::pair<std::string,double>> ADOSC(std::string symbol, std::string intervalLength, int intervalAmount, int shortEMA, int longEMA){
-    //validate paramaters: longEMA > shortEMA... 0 < intervalAmount > size / 6
-    //use ChaikinAD funct to fetch A/D values w/ intervalAm += longEMA
-    //get AD values from return vector of ChaikinAD function and line up in single vector from newest to oldest
-    //pass that vector to EMA and get EMA long and short for each interval
-    //then for each interval do short - long... thats the ADOSC value for that interval
-    //order using dates from vector gotten from ChaikinAD and w/ ADOSC value
-    //return as vector pair.
+std::vector<std::pair<std::string,double>> Analytics::ADOSC(std::string symbol, std::string intervalLength, int intervalAmount, int shortEMA, int longEMA){
     std::vector<std::pair<std::string,double>> adoscValues;
+    //validate EMA paramaters
     if(longEMA < shortEMA || intervalAmount < 0){
         return adoscValues;
     }
-
-    // std::vector<std::pair<std::string, double>> chaikinValues = ChaikinAD(symbol, intervalLength , intervalAmount + longEMA);
-     return adoscValues;
+    //get Chaikin AD line values
+    std::vector<std::pair<std::string, double>> adValues = ChaikinAD(symbol, intervalLength, intervalAmount + longEMA);
+    //validate success of ChaikinAD function
+    if(adValues.size() == 0){
+        return adoscValues;
+    }
+    //cast from pair vector, to single type vector, and extract numeric data
+    std::vector<double> extractedADValues;
+    for (auto pair : adValues) {
+        extractedADValues.push_back(pair.second);
+    }
+    //EMA for short and long periods
+    std::vector<double> longEMAValues = ExponentialMovingAverage(extractedADValues, longEMA);
+    std::vector<double> shortEMAValues = ExponentialMovingAverage(extractedADValues, shortEMA );
+    //value pair variables for return vector
+    double valADOSC; std::string time;
+    //run through ADOSC equation and get 'intervalAmount' data points
+    for(int i = 0; i < intervalAmount; i++){
+        valADOSC = shortEMAValues.at(i) - longEMAValues.at(i);
+        time = adValues.at(i).first;
+        adoscValues.push_back({time, valADOSC});
+    }
+    return adoscValues;
 }
 
 
