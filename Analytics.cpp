@@ -37,13 +37,13 @@ std::vector<std::pair<std::string,double>> Analytics::ADOSC(std::string symbol, 
     std::vector<std::pair<std::string,double>> adoscValues;
     //validate EMA paramaters
     if(longEMA < shortEMA || intervalAmount < 0){
-        return adoscValues;
+        throw std::invalid_argument("Analytics.cpp @ ADOSC: longEMA < shortEMA  OR intervalAmount < 0");
     }
     //get Chaikin AD line values
     std::vector<std::pair<std::string, double>> adValues = ChaikinAD(symbol, intervalLength, intervalAmount + longEMA);
     //validate success of ChaikinAD function
     if(adValues.size() == 0){
-        return adoscValues;
+        throw std::invalid_argument("Analytics.cpp @ ADOSC: adValues.size() is 0... ChaikinAD() function returned an empty vector");
     }
     //cast from pair vector, to single type vector, and extract numeric data
     std::vector<double> extractedADValues;
@@ -64,18 +64,17 @@ std::vector<std::pair<std::string,double>> Analytics::ADOSC(std::string symbol, 
     return adoscValues;
 }
 
+std::vector<std::pair<std::string, double>> Analytics::ADX(std::string symbol, std::string intervalLength, std::string intervalAmount){
+
+}
+
+
 
 
 
 
 //HELPER FUNCTIONS
 double Analytics::MoneyFlowMultiplier(int interval){
-    //assume data filled up in valuesTS already
-    //validate interval
-    //get high, low, close for specific interval
-    //run through equation
-    //validate interval is within vector 
-   
     if(interval < 0 || interval >= valuesTS->size()){
         throw std::invalid_argument("Analytics.cpp @ MoneyFlowMultiplier: Invalid paramater argument 'interval'\n");
     }
@@ -83,20 +82,15 @@ double Analytics::MoneyFlowMultiplier(int interval){
     double close = std::stod(valuesTS->at(interval).close);
     double high = std::stod(valuesTS->at(interval).high);
     double low = std::stod(valuesTS->at(interval).low);
-
     //check for division by 0
     if(high == low){
         throw std::runtime_error("Analytics.cpp @ MoneyFlowMultiplier: high and low values are equal resulting in division by 0\n");
     }
     //Money Flow Multiplier Value equation
     return ((close - low) - (high - close)) / ((high - low));
-
 }
 
 double Analytics::MoneyFlowVolume(int interval){
-    //assume data is populated in valuesTS
-    //get MFV for current interval
-    //validate interval is within vector 
     if(interval < 0 || interval >= valuesTS->size()){
         throw std::invalid_argument("Analytics.cpp @ MoneyFlowVolume: Invalid paramater argument 'interval'\n");
     }
@@ -109,7 +103,7 @@ double Analytics::MoneyFlowVolume(int interval){
 std::vector<double> Analytics::ExponentialMovingAverage(std::vector<double> values, int periods){
     std::vector<double> emaValues;
     if(periods <= 0 || values.size() < periods){
-        return emaValues;
+        throw std::invalid_argument("Analytics.cpp @ ExponentialMovingAverage: Invalid argument 'periods' or values.size() < periods");
     }
     double k = 2.0 / (static_cast<double>(periods) + 1.0); //smothing factor for EMA equation
     double sum = 0; //sum to calculate SMA value for initialEMA
@@ -119,9 +113,9 @@ std::vector<double> Analytics::ExponentialMovingAverage(std::vector<double> valu
     //get SMA of the last element in 'values' 
     double smaValue = (sum / periods);
     //run SMA of last element through EMA equation to get initialEMA
-    double initialEMA = smaValue; //((values.at(values.size()- periods) ) * k) + (smaValue * (1 - k));
+    double initialEMA = smaValue; 
     emaValues.push_back(initialEMA);
-
+    //run through EMA equation starting with initialEMA
     double emaToday;
     double emaYesterday = initialEMA;
     for(int i = values.size() - periods -1; i > -1; i--){
@@ -134,28 +128,18 @@ std::vector<double> Analytics::ExponentialMovingAverage(std::vector<double> valu
 }
 
 std::vector<double> Analytics::SimpleMovingAverage(std::vector<double> values, int periods){
-    //assume values.size == 10, and periods = 5. That means take SMA of intervals 10-6. 10 being oldest in time, 6 being newer.
-    //add up all the values from intervals 10 through 6 and divide by 5. Thats SMA for period 6
-    //periods cannot be greater than values.size
-
-
     //call for setvalues (intervalAmount = values.size() + (periods -1) )
     //assuming 'values' is what we want
     //behind the scenes, we API call for 'values.size + periods' intervals, to initialize oldest value
     //needs those extra intervals provided by periods or else 'values' would get cut down by magnitude of 'periods'
-
-
-
     std::vector<double> smaValues;
     if(periods <= 0 || values.size() < periods){
-        return smaValues;
+        throw std::invalid_argument("Analytics.cpp @ SimpleMovingAverage: Invalid paramater argument 'periods' or values.size() < periods");
     }
-
     double sum = 0;
     for (int i = values.size() - periods; i < values.size(); i++){
         sum += values.at(i);
     }
-
     //initial SMA value 
     smaValues.push_back((sum / periods));
 
@@ -167,11 +151,110 @@ std::vector<double> Analytics::SimpleMovingAverage(std::vector<double> values, i
         smaValues.push_back((sum / periods));
     }
     std::reverse(smaValues.begin() , smaValues.end());
-    //reverse vector
 
     //size of return vector is values.size() - periods + 1
     return smaValues;
 }
+
+std::vector<double> Analytics::TrueRange(int intervalAmount){
+    //values.size() must be at least 'intervalAmount + 1'
+    //intervalAmount to determine size of return vector
+    //values ordered from newest data to oldest 
+    if(valuesTS->size() < intervalAmount +1){
+        throw std::invalid_argument("Analytics.cpp @ TrueRange: size of valuesTS not big enough for trueRange to calculate given 'intervalAmount'");
+    }
+    
+    std::vector<double> trueRange;
+
+    std::vector<double> highVals = getHighs();
+    std::vector<double> lowVals = getLows();
+    std::vector<double> closeVals = getCloses();
+
+  
+    double highLowRange;     // currentHigh - currentLow
+    double absHighPrevClose; // |(currentHigh - previousClose)|
+    double absLowPrevClose;  // |(currentLow - previousClose)|
+
+    for(int i = intervalAmount -1; i > -1; i--){
+        highLowRange     = highVals.at(i) - lowVals.at(i);
+        absHighPrevClose = std::abs(highVals.at(i) - closeVals.at(i + 1));
+        absLowPrevClose  = std::abs(lowVals.at(i) - closeVals.at(i + 1));
+        //take maximum value of all 3 and push into vector
+        trueRange.push_back(std::max({highLowRange, absHighPrevClose, absLowPrevClose}));
+    }
+    std::reverse(trueRange.begin(), trueRange.end());
+
+    return trueRange;
+}
+
+std::vector<double> Analytics::PositiveDirectionalMovement(std::vector<double> values, int intervalAmount){
+    
+}
+
+std::vector<double> Analytics::NegativeDirectionalMovement(std::vector<double> values, int intervalAmount){
+    
+}
+
+
+
+
+
+std::vector<double> Analytics::getHighs(){
+    if(valuesTS->size() <= 0){
+        throw std::invalid_argument("Analytics.cpp @ getHighs: valuesTS is empty");
+    }
+    std::vector<double> highValues;
+    for(int i = 0; i < valuesTS->size(); i++){
+        highValues.push_back(std::stod(valuesTS->at(i).high));
+
+    }
+    return highValues;
+}
+std::vector<double> Analytics::getLows(){
+    if(valuesTS->size() <= 0){
+        throw std::invalid_argument("Analytics.cpp @ getLows: valuesTS is empty");
+    }
+    std::vector<double> lowValues;
+    for(int i = 0; i < valuesTS->size(); i++){
+        lowValues.push_back(std::stod(valuesTS->at(i).low));
+
+    }
+    return lowValues;
+    
+}
+std::vector<double> Analytics::getOpens(){
+    if(valuesTS->size() <= 0){
+        throw std::invalid_argument("Analytics.cpp @ getOpens: valuesTS is empty");
+    }
+    std::vector<double> openValues;
+    for(int i = 0; i < valuesTS->size(); i++){
+        openValues.push_back(std::stod(valuesTS->at(i).open));
+
+    }
+    return openValues;
+    
+}
+std::vector<double> Analytics::getCloses(){
+    if(valuesTS->size() <= 0){
+        throw std::invalid_argument("Analytics.cpp @ getCloses: valuesTS is empty");
+    }
+    std::vector<double> closeValues;
+    for(int i = 0; i < valuesTS->size(); i++){
+        closeValues.push_back(std::stod(valuesTS->at(i).close));
+
+    }
+    return closeValues;
+    
+}
+
+
+
+
+
+
+
+
+
 
 
 

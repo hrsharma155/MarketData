@@ -24,19 +24,13 @@ class Analytics : public GeneralInfo{
         /// @param longEMA  Upper bound exponential moving average 
         /// @return vector containing the dateTime and respective ADOSC value for all intervals given in the form <date,ADOSC...date,ADOSC...etc>
         std::vector<std::pair<std::string, double>> ADOSC(std::string symbol, std::string intervalLength, int intervalAmount, int shortEMA, int longEMA);
-        /// @brief Calculate the Average Directional Index(ADX). Quantifies strength of a trend in a price series, regardless of direction. Default intervalAmount to 14.
-        ///        ADX = EMA(DX, 14)
-        /// @param symbol Company symbol for query
-        /// @param intervalLength length of each period, 1min,5min,1day....    intervalAmount default to 14 
-        /// @return vector containing adx value for each interval in the form <date,ADX....date,ADX>
-        std::vector<std::string> ADX(std::string symbol, std::string intervalLength);
         /// @brief Calculate Average Direcitonal Index. Custom version of default ADX. intervalAmounts are mutable here.
         ///        ADX = EMA(DX, intervalAmount)
         /// @param symbol Company symbol for query
-        /// @param intervalLength length of each period, 1min,5min,1day....
-        /// @param intervalAmount amount of time periods
+        /// @param intervalLength length of each period, 1min,5min,1day.... 
+        /// @param intervalAmount amount of time periods. default to 14
         /// @return vector containing adx value for each interval in the form <date,ADX....date,ADX>
-        std::vector<std::string> ADX(std::string symbol, std::string intervalLength, std::string intervalAmount);
+        std::vector<std::pair<std::string, double>> ADX(std::string symbol, std::string intervalLength, std::string intervalAmount);
         /// @brief Smoothed version of ADX indicator. Quantifies momentum change in the ADX. Interval Amount defaulted to 14
         ///        ADXR = (currentADX + ADX from 14 periods ago.) / 2
         /// @param symbol company symbol for query
@@ -1037,17 +1031,17 @@ class Analytics : public GeneralInfo{
         /// @param currentLow low price of the current period
         /// @param previousClose close price of the period previous to the current period
         /// @return True range value
-        double TrueRange(double currentHigh, double currentLow, double previousClose);
+        std::vector<double> TrueRange(int intervalAmount);
         /// @brief +DM = currentHigh - previousHigh
         /// @param currentHigh 
         /// @param previousHigh 
         /// @return +DM value
-        double PositiveDirectionalMovement(double currentHigh, double previousHigh);
+        std::vector<double> PositiveDirectionalMovement(std::vector<double> values, int intervalAmount);
         /// @brief -DM = previousLow - currentLow
         /// @param currentLow 
         /// @param previousLow 
         /// @return -DM value
-        double NegativeDirectionalMovement(double currentLow, double previousLow);
+        std::vector<double> NegativeDirectionalMovement(std::vector<double> values, int intervalAmount);;
         /// @brief +DI = ((posDM)/TrueRange) * 100
         /// @param positiveDM use PositiveDirectionalMovement();
         /// @param trueRange use TrueRange();
@@ -1064,6 +1058,10 @@ class Analytics : public GeneralInfo{
         /// @return DX value 
         double DirectionalMovementIndex(double positiveDI, double negativeDI);
 
+        std::vector<double> getHighs();
+        std::vector<double> getLows();
+        std::vector<double> getCloses();
+        std::vector<double> getOpens();
         
 
 
